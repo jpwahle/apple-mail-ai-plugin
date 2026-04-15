@@ -11,7 +11,7 @@ SIGNING_IDENTITY ?=
 APPLE_ID ?=
 TEAM_ID ?=
 
-.PHONY: build run clean release dmg sign notarize
+.PHONY: build run clean release dmg sign notarize install uninstall
 
 # Development build
 build:
@@ -100,6 +100,17 @@ dmg: sign
 # Build and run
 run: build
 	@open "$(APP_BUNDLE)"
+
+# Install to /Applications
+install: sign
+	@rm -rf "/Applications/$(APP_NAME).app"
+	@cp -R "$(APP_BUNDLE)" "/Applications/$(APP_NAME).app"
+	@echo "✅ Installed to /Applications/$(APP_NAME).app"
+
+# Uninstall from /Applications
+uninstall:
+	@rm -rf "/Applications/$(APP_NAME).app"
+	@echo "✅ Removed /Applications/$(APP_NAME).app"
 
 # Clean build artifacts
 clean:

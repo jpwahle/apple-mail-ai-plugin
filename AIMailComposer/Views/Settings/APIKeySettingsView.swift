@@ -5,6 +5,7 @@ struct APIKeySettingsView: View {
     @State private var anthropicKey: String = ""
     @State private var openaiKey: String = ""
     @State private var geminiKey: String = ""
+    @State private var openrouterKey: String = ""
     @State private var statusMessage: String = ""
     @State private var isError: Bool = false
 
@@ -34,6 +35,20 @@ struct APIKeySettingsView: View {
                         geminiKey = settingsStore.getAPIKey(for: .gemini) ?? ""
                     }
             }
+            Section {
+                TextField("sk-or-v1-…", text: $openrouterKey)
+                    .textFieldStyle(.roundedBorder)
+                    .font(.system(.body, design: .monospaced))
+                    .onAppear {
+                        openrouterKey = settingsStore.getAPIKey(for: .openrouter) ?? ""
+                    }
+            } header: {
+                Text("OpenRouter")
+            } footer: {
+                Text("One key, access to every model on openrouter.ai — Claude, GPT, Gemini, Llama, Mistral, and more. Get a key at openrouter.ai/keys.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
             HStack {
                 Button("Save Keys") {
                     saveKeys()
@@ -53,34 +68,28 @@ struct APIKeySettingsView: View {
         let trimmedAnthropic = anthropicKey.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedOpenAI = openaiKey.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedGemini = geminiKey.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedOpenRouter = openrouterKey.trimmingCharacters(in: .whitespacesAndNewlines)
         anthropicKey = trimmedAnthropic
         openaiKey = trimmedOpenAI
         geminiKey = trimmedGemini
+        openrouterKey = trimmedOpenRouter
 
         do {
-            if !trimmedAnthropic.isEmpty {
-                try settingsStore.setAPIKey(trimmedAnthropic, for: .anthropic)
-            } else {
-                settingsStore.deleteAPIKey(for: .anthropic)
-                settingsStore.anthropicModels = []
-            }
-            if !trimmedOpenAI.isEmpty {
-                try settingsStore.setAPIKey(trimmedOpenAI, for: .openai)
-            } else {
-                settingsStore.deleteAPIKey(for: .openai)
-                settingsStore.openaiModels = []
-            }
-            if !trimmedGemini.isEmpty {
-                try settingsStore.setAPIKey(trimmedGemini, for: .gemini)
-            } else {
-                settingsStore.deleteAPIKey(for: .gemini)
-                settingsStore.geminiModels = []
-            }
+            try applyKey(trimmedAnthropic, for: .anthropic) { settingsStore.anthropicModels = [] }
+            try applyKey(trimmedOpenAI, for: .openai) { settingsStore.openaiModels = [] }
+            try applyKey(trimmedGemini, for: .gemini) { settingsStore.geminiModels = [] }
+            try applyKey(trimmedOpenRouter, for: .openrouter) { settingsStore.openrouterModels = [] }
+
             isError = false
             statusMessage = "Saved. Fetching models…"
             Task {
                 await settingsStore.fetchAllModels()
-                let errors = [settingsStore.anthropicFetchError, settingsStore.openaiFetchError, settingsStore.geminiFetchError].compactMap { $0 }
+                let errors = [
+                    settingsStore.anthropicFetchError,
+                    settingsStore.openaiFetchError,
+                    settingsStore.geminiFetchError,
+                    settingsStore.openrouterFetchError,
+                ].compactMap { $0 }
                 if errors.isEmpty {
                     statusMessage = "Saved. \(settingsStore.allModels.count) models loaded."
                     isError = false
@@ -92,6 +101,15 @@ struct APIKeySettingsView: View {
         } catch {
             statusMessage = error.localizedDescription
             isError = true
+        }
+    }
+
+    private func applyKey(_ key: String, for provider: AIProvider, onDelete clearModels: () -> Void) throws {
+        if key.isEmpty {
+            settingsStore.deleteAPIKey(for: provider)
+            clearModels()
+        } else {
+            try settingsStore.setAPIKey(key, for: provider)
         }
     }
 }

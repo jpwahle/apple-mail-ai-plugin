@@ -1,7 +1,10 @@
 import Foundation
 
-final class OpenAIClient: AIClient {
-    let provider = AIProvider.openai
+/// OpenRouter exposes the OpenAI chat-completions contract, so this client is
+/// a thin variant of `OpenAIClient` with a different base URL and a pair of
+/// optional attribution headers.
+final class OpenRouterClient: AIClient {
+    let provider = AIProvider.openrouter
     private let apiKey: String
     private let model: String
 
@@ -14,11 +17,13 @@ final class OpenAIClient: AIClient {
         AsyncThrowingStream { continuation in
             let task = Task {
                 do {
-                    let url = URL(string: "https://api.openai.com/v1/chat/completions")!
+                    let url = URL(string: "https://openrouter.ai/api/v1/chat/completions")!
                     var request = URLRequest(url: url)
                     request.httpMethod = "POST"
                     request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
                     request.setValue("application/json", forHTTPHeaderField: "content-type")
+                    request.setValue("https://github.com/aimail", forHTTPHeaderField: "HTTP-Referer")
+                    request.setValue("AI Mail Composer", forHTTPHeaderField: "X-Title")
 
                     let body: [String: Any] = [
                         "model": model,
@@ -43,6 +48,8 @@ final class OpenAIClient: AIClient {
 
                     for try await line in bytes.lines {
                         try Task.checkCancellation()
+                        // OpenRouter sends occasional ": OPENROUTER PROCESSING"
+                        // keepalive comments — parse() returns nil for those.
                         switch OpenAICompatibleStream.parse(line: line) {
                         case .delta(let text): continuation.yield(text)
                         case .done: continuation.finish(); return

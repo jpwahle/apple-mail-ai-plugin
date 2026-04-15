@@ -20,7 +20,10 @@ struct ModelSelectionView: View {
     }
 
     private var isFetching: Bool {
-        settingsStore.isFetchingAnthropic || settingsStore.isFetchingOpenAI || settingsStore.isFetchingGemini
+        settingsStore.isFetchingAnthropic
+            || settingsStore.isFetchingOpenAI
+            || settingsStore.isFetchingGemini
+            || settingsStore.isFetchingOpenRouter
     }
 
     private var emptyState: some View {
@@ -35,16 +38,29 @@ struct ModelSelectionView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+            errorLines
+            Spacer()
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    private var errorLines: some View {
+        VStack(spacing: 2) {
             if let err = settingsStore.anthropicFetchError {
                 Text("Anthropic: \(err)").font(.caption2).foregroundStyle(.red)
             }
             if let err = settingsStore.openaiFetchError {
                 Text("OpenAI: \(err)").font(.caption2).foregroundStyle(.red)
             }
-            Spacer()
+            if let err = settingsStore.geminiFetchError {
+                Text("Gemini: \(err)").font(.caption2).foregroundStyle(.red)
+            }
+            if let err = settingsStore.openrouterFetchError {
+                Text("OpenRouter: \(err)").font(.caption2).foregroundStyle(.red)
+            }
         }
-        .padding()
-        .frame(maxWidth: .infinity)
     }
 
     private var modelList: some View {
@@ -65,45 +81,19 @@ struct ModelSelectionView: View {
             .padding()
 
             List(selection: $settingsStore.selectedModelID) {
-                if !settingsStore.anthropicModels.isEmpty {
-                    Section("Anthropic") {
-                        ForEach(settingsStore.anthropicModels) { model in
-                            modelRow(model)
-                                .tag(model.id)
-                        }
-                    }
-                }
-                if !settingsStore.openaiModels.isEmpty {
-                    Section("OpenAI") {
-                        ForEach(settingsStore.openaiModels) { model in
-                            modelRow(model)
-                                .tag(model.id)
-                        }
-                    }
-                }
-                if !settingsStore.geminiModels.isEmpty {
-                    Section("Google Gemini") {
-                        ForEach(settingsStore.geminiModels) { model in
-                            modelRow(model)
-                                .tag(model.id)
+                ForEach(settingsStore.sortedGroupedModels, id: \.0) { provider, models in
+                    Section(provider.displayName) {
+                        ForEach(models) { model in
+                            modelRow(model).tag(model.id)
                         }
                     }
                 }
             }
             .listStyle(.bordered)
 
-            if let err = settingsStore.anthropicFetchError {
-                Text("Anthropic error: \(err)")
-                    .font(.caption2).foregroundStyle(.red).padding(.horizontal)
-            }
-            if let err = settingsStore.openaiFetchError {
-                Text("OpenAI error: \(err)")
-                    .font(.caption2).foregroundStyle(.red).padding(.horizontal)
-            }
-            if let err = settingsStore.geminiFetchError {
-                Text("Gemini error: \(err)")
-                    .font(.caption2).foregroundStyle(.red).padding(.horizontal)
-            }
+            errorLines
+                .padding(.horizontal)
+                .padding(.bottom, 8)
         }
     }
 

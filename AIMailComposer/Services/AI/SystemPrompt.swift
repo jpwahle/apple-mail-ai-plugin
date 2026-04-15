@@ -1,16 +1,19 @@
 import Foundation
 
 enum SystemPrompt {
-    static func compose(thread: EmailThread, userThoughts: String) -> (system: String, user: String) {
+    static func compose(context: ComposerContext, userThoughts: String) -> (system: String, user: String) {
         let system = """
-        You are an email writing assistant. Compose a reply email based on the conversation \
-        thread and the user's thoughts about what to say.
+        You are an email writing assistant. Compose the body of an email based on the \
+        context from the user's open compose window and the user's thoughts about what \
+        to say.
 
         ## Rules
-        - Output ONLY the reply text. No explanations, no markdown, no subject line.
-        - Match the greeting style of the thread (e.g. "Hi Sarah," or "Dear Mr. Smith,").
-        - If the thread is in German, write in German and end with "Beste Grüße".
-        - If the thread is in English, write in English and end with "Best wishes".
+        - Output ONLY the body text. No explanations, no markdown, no subject line.
+        - Match the greeting style of the thread when one exists (e.g. "Hi Sarah," or \
+        "Dear Mr. Smith,"). For a new email with no thread, pick a greeting appropriate \
+        to the recipient and register.
+        - If the thread or draft is in German, write in German and end with "Beste Grüße".
+        - If the thread or draft is in English, write in English and end with "Best wishes".
         - Do not use any other sign-off.
         - Match the formality level of the incoming emails. Mostly informal, but sometimes formal.
 
@@ -38,14 +41,36 @@ enum SystemPrompt {
         - Do not start with filler like "I hope this email finds you well."
         """
 
-        let user = """
-        ## Previous email thread
-        \(thread.formatted())
+        var userParts: [String] = []
 
-        ## My thoughts for what to write in the reply
-        \(userThoughts)
-        """
+        userParts.append("## Compose window")
+        userParts.append("Subject: \(context.subject.isEmpty ? "(none)" : context.subject)")
+        if context.hasRecipients {
+            userParts.append("To: \(context.recipients.joined(separator: ", "))")
+        } else {
+            userParts.append("To: (no recipients yet)")
+        }
 
-        return (system, user)
+        if !context.currentDraft.isEmpty {
+            userParts.append("")
+            userParts.append("## Existing draft in compose window")
+            userParts.append(context.currentDraft)
+        }
+
+        if let thread = context.thread, !thread.messages.isEmpty {
+            userParts.append("")
+            userParts.append("## Previous email thread")
+            userParts.append(thread.formatted())
+        } else {
+            userParts.append("")
+            userParts.append("## Previous email thread")
+            userParts.append("(none — this is a new email)")
+        }
+
+        userParts.append("")
+        userParts.append("## My thoughts for what to write")
+        userParts.append(userThoughts)
+
+        return (system, userParts.joined(separator: "\n"))
     }
 }

@@ -3,20 +3,20 @@ import AppKit
 
 enum MailBridgeError: LocalizedError {
     case scriptFailed(String)
-    case noSelection(String)
+    case noComposer
     case mailNotRunning
     case parseError(String)
 
     var errorDescription: String? {
         switch self {
-        case .scriptFailed(let msg): return "AppleScript error: \(msg)"
-        case .noSelection(let debug):
-            if debug.isEmpty {
-                return "No email selected in Mail. Select a message and try again."
-            }
-            return "Could not find email thread. Debug: \(debug)"
-        case .mailNotRunning: return "Mail is not running. Open Mail and try again."
-        case .parseError(let msg): return "Failed to parse email thread: \(msg)"
+        case .scriptFailed(let msg):
+            return "AppleScript error: \(msg)"
+        case .noComposer:
+            return "Open a compose window in Mail first, then try again."
+        case .mailNotRunning:
+            return "Mail is not running. Open Mail and try again."
+        case .parseError(let msg):
+            return "Failed to parse Mail context: \(msg)"
         }
     }
 }
@@ -50,31 +50,38 @@ final class MailBridge {
         }
     }
 
-    static func fetchEmailThread() async throws -> EmailThread {
+    /// Pull context from the currently open Mail compose window.
+    /// Never reads from the message list — the compose window is the source of truth.
+    static func fetchComposerContext() async throws -> ComposerContext {
         guard await isMailRunning() else {
             throw MailBridgeError.mailNotRunning
         }
 
-        let raw = try await executeAppleScript(MailScripts.fetchThread)
+        let raw = try await executeAppleScript(MailScripts.fetchComposerContext)
 
-        if raw.hasPrefix("ERROR:NO_SELECTION") {
-            let debug = raw.replacingOccurrences(of: "ERROR:NO_SELECTION|", with: "")
-                .replacingOccurrences(of: "ERROR:NO_SELECTION", with: "")
-            throw MailBridgeError.noSelection(debug)
+        if raw.hasPrefix("ERROR:NO_COMPOSER") {
+            throw MailBridgeError.noComposer
         }
 
-        return try MailThreadParser.parse(raw)
+        return try MailThreadParser.parseComposerContext(raw)
     }
 
+    /// Write the reply directly into the current Mail compose window.
+    /// Falls back to the clipboard if the AppleScript insert fails.
     @MainActor
-    static func insertReply(_ text: String) {
+    static func insertReply(_ text: String) async {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString(text, forType: .string)
 
-        // Bring Mail to front
+        _ = try? await executeAppleScript(MailScripts.insertReply(text))
+        activateMail()
+    }
+
+    @MainActor
+    private static func activateMail() {
         if let mailApp = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.mail").first {
-            mailApp.activate(options: .activateIgnoringOtherApps)
+            mailApp.activate()
         }
     }
 }

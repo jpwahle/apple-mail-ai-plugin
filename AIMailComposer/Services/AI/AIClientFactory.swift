@@ -18,6 +18,11 @@ enum AIClientFactory {
                 throw AIClientError.missingAPIKey(.gemini)
             }
             return GeminiClient(apiKey: key, model: model.id)
+        case .openrouter:
+            guard let key = keychainService.getKey(for: .openrouter), !key.isEmpty else {
+                throw AIClientError.missingAPIKey(.openrouter)
+            }
+            return OpenRouterClient(apiKey: key, model: model.id)
         }
     }
 }

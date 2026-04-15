@@ -1,137 +1,194 @@
 import Foundation
 
 enum MailScripts {
-    static let fetchThread = """
-    tell application "Mail"
-        set rootMsg to missing value
-        set debugInfo to ""
+    /// Read context from the currently open compose window in Mail.
+    ///
+    /// Implemented entirely against the Mail scripting dictionary — no System
+    /// Events / Accessibility calls — so the app only needs Automation
+    /// permission for Mail, nothing else.
+    ///
+    /// Detection priority:
+    ///   1. `outgoing message 1` properties (best: gives recipients + draft)
+    ///   2. Any Mail `window` that is not the `message viewer`'s window (the
+    ///      list/reading pane). This covers the macOS Sonoma/Sequoia case
+    ///      where a brand-new blank compose window doesn't show up in
+    ///      `outgoing messages`.
+    static let fetchComposerContext = """
+    set composeSubject to ""
+    set recipientList to ""
+    set draftContent to ""
+    set composeWinL to "-"
+    set composeWinT to "-"
+    set composeWinR to "-"
+    set composeWinB to "-"
+    set hasComposer to false
+    set debugInfo to ""
 
-        -- Approach 1: try "selected messages" (modern Mail) and "selection" (older Mail)
+    tell application "Mail"
+        -- Pass 1: outgoing message. Populates everything.
         try
-            set viewerCount to count of message viewers
-            set debugInfo to debugInfo & "viewers:" & (viewerCount as string) & ";"
-            repeat with i from 1 to viewerCount
+            set outMsgCount to count of outgoing messages
+            set debugInfo to "out:" & outMsgCount
+            if outMsgCount > 0 then
+                set outMsg to outgoing message 1
                 try
-                    set sel to selected messages of message viewer i
-                    set debugInfo to debugInfo & "v" & (i as string) & "sel:" & ((count of sel) as string) & ";"
-                    if (count of sel) > 0 then
-                        set rootMsg to item 1 of sel
-                        exit repeat
-                    end if
-                on error
-                    -- Try legacy "selection" property
-                    try
-                        set sel to selection of message viewer i
-                        if (count of sel) > 0 then
-                            set rootMsg to item 1 of sel
+                    set composeSubject to subject of outMsg
+                end try
+                try
+                    repeat with r in to recipients of outMsg
+                        if recipientList is not "" then set recipientList to recipientList & ", "
+                        set recipientList to recipientList & (address of r)
+                    end repeat
+                end try
+                try
+                    set draftContent to content of outMsg
+                end try
+                set hasComposer to true
+            end if
+        on error errMsg
+            set debugInfo to debugInfo & " outErr:" & errMsg
+        end try
+
+        -- Pass 2: find a non-viewer window. Works even for blank new
+        -- compose windows that aren't exposed via `outgoing messages`.
+        try
+            set viewerNames to {}
+            set viewerCount to count of message viewers
+            set debugInfo to debugInfo & " vCount:" & viewerCount
+            repeat with mv in message viewers
+                try
+                    set n to name of (window of mv)
+                    set viewerNames to viewerNames & {n}
+                end try
+            end repeat
+
+            set winCount to count of windows
+            repeat with i from 1 to winCount
+                try
+                    set w to window i
+                    set wName to name of w
+                    set isViewer to false
+                    repeat with vn in viewerNames
+                        if wName is equal to (vn as string) then
+                            set isViewer to true
                             exit repeat
                         end if
-                    end try
+                    end repeat
+                    if not isViewer then
+                        -- Non-viewer window in Mail == compose (or reading)
+                        -- window. Both are fine for our purposes.
+                        if not hasComposer then
+                            set composeSubject to wName
+                            set hasComposer to true
+                        end if
+                        try
+                            set b to bounds of w
+                            set composeWinL to (item 1 of b) as string
+                            set composeWinT to (item 2 of b) as string
+                            set composeWinR to (item 3 of b) as string
+                            set composeWinB to (item 4 of b) as string
+                        end try
+                        exit repeat
+                    end if
                 end try
             end repeat
         on error errMsg
-            set debugInfo to debugInfo & "viewer_err:" & errMsg & ";"
+            set debugInfo to debugInfo & " winErr:" & errMsg
         end try
+    end tell
 
-        -- Approach 2: if a compose window is open, get subject from outgoing message
-        if rootMsg is missing value then
-            try
-                set outMsgCount to count of outgoing messages
-                set debugInfo to debugInfo & "outgoing:" & (outMsgCount as string) & ";"
-                if outMsgCount > 0 then
-                    set outMsg to outgoing message 1
-                    set composeSubject to subject of outMsg
-                    set debugInfo to debugInfo & "compose_subj:" & composeSubject & ";"
-                    set baseSubj to my stripPrefixes(composeSubject)
-                    repeat with acct in accounts
-                        if rootMsg is not missing value then exit repeat
-                        repeat with mbName in {"INBOX", "Sent Messages", "Sent", "Gesendet", "Archive", "Archiv", "All Mail"}
-                            if rootMsg is not missing value then exit repeat
-                            try
-                                set mb to mailbox mbName of acct
-                                set matches to (every message of mb whose subject contains baseSubj)
-                                if (count of matches) > 0 then
-                                    set rootMsg to item 1 of matches
-                                end if
-                            end try
-                        end repeat
-                    end repeat
-                end if
-            on error errMsg
-                set debugInfo to debugInfo & "outgoing_err:" & errMsg & ";"
-            end try
+    if not hasComposer then
+        return "ERROR:NO_COMPOSER|" & debugInfo
+    end if
+
+    -- Reply detection
+    set isReply to false
+    if composeSubject starts with "Re: " then set isReply to true
+    if composeSubject starts with "Re:" then set isReply to true
+    if composeSubject starts with "RE: " then set isReply to true
+    if composeSubject starts with "RE:" then set isReply to true
+    if composeSubject starts with "Fwd: " then set isReply to true
+    if composeSubject starts with "Fwd:" then set isReply to true
+    if composeSubject starts with "FWD: " then set isReply to true
+    if composeSubject starts with "FWD:" then set isReply to true
+    if composeSubject starts with "AW: " then set isReply to true
+    if composeSubject starts with "AW:" then set isReply to true
+    if composeSubject starts with "WG: " then set isReply to true
+    if composeSubject starts with "WG:" then set isReply to true
+
+    set output to "COMPOSER" & linefeed
+    set output to output & "SUBJECT:" & composeSubject & linefeed
+    set output to output & "TO:" & recipientList & linefeed
+    set output to output & "FRAME:" & composeWinL & "," & composeWinT & "," & composeWinR & "," & composeWinB & linefeed
+    set output to output & "DRAFT_START" & linefeed
+    set output to output & draftContent & linefeed
+    set output to output & "DRAFT_END" & linefeed
+    set output to output & "---END_COMPOSER---" & linefeed
+
+    if not isReply then
+        return output
+    end if
+
+    set baseSubject to composeSubject
+    set changed to true
+    repeat while changed
+        set changed to false
+        if baseSubject starts with "Re: " then
+            set baseSubject to text 5 thru -1 of baseSubject
+            set changed to true
+        else if baseSubject starts with "Re:" then
+            set baseSubject to text 4 thru -1 of baseSubject
+            set changed to true
+        else if baseSubject starts with "RE: " then
+            set baseSubject to text 5 thru -1 of baseSubject
+            set changed to true
+        else if baseSubject starts with "Fwd: " then
+            set baseSubject to text 6 thru -1 of baseSubject
+            set changed to true
+        else if baseSubject starts with "Fwd:" then
+            set baseSubject to text 5 thru -1 of baseSubject
+            set changed to true
+        else if baseSubject starts with "AW: " then
+            set baseSubject to text 5 thru -1 of baseSubject
+            set changed to true
+        else if baseSubject starts with "WG: " then
+            set baseSubject to text 5 thru -1 of baseSubject
+            set changed to true
         end if
+    end repeat
 
-        -- Approach 3: get the frontmost window name (it contains the subject) and search
-        if rootMsg is missing value then
-            try
-                set winCount to count of windows
-                set debugInfo to debugInfo & "windows:" & (winCount as string) & ";"
-                if winCount > 0 then
-                    set winName to name of window 1
-                    set debugInfo to debugInfo & "win1:" & winName & ";"
-                    -- Window name is typically the email subject
-                    if winName is not "" and winName is not "New Message" then
-                        set baseSubj to my stripPrefixes(winName)
-                        repeat with acct in accounts
-                            if rootMsg is not missing value then exit repeat
-                            repeat with mbName in {"INBOX", "Sent Messages", "Sent", "Gesendet", "Archive", "Archiv", "All Mail"}
-                                if rootMsg is not missing value then exit repeat
-                                try
-                                    set mb to mailbox mbName of acct
-                                    set matches to (every message of mb whose subject contains baseSubj)
-                                    if (count of matches) > 0 then
-                                        set rootMsg to item 1 of matches
-                                    end if
-                                end try
-                            end repeat
-                        end repeat
-                    end if
-                end if
-            on error errMsg
-                set debugInfo to debugInfo & "win_err:" & errMsg & ";"
-            end try
-        end if
+    if baseSubject is "" then
+        return output
+    end if
 
-        if rootMsg is missing value then
-            return "ERROR:NO_SELECTION|" & debugInfo
-        end if
-
-        -- Found a root message, now collect the thread
-        set rootSubject to subject of rootMsg
-        set rootMailbox to mailbox of rootMsg
-        set baseSubject to my stripPrefixes(rootSubject)
-
-        set threadMsgs to (every message of rootMailbox whose subject contains baseSubject)
-
-        -- Also check Sent mailbox for our replies in the thread
+    tell application "Mail"
+        set threadMsgs to {}
         try
-            set rootAccount to account of rootMailbox
-            repeat with sentName in {"Sent Messages", "Sent", "Gesendet"}
-                try
-                    set sentMb to mailbox sentName of rootAccount
-                    set sentMsgs to (every message of sentMb whose subject contains baseSubject)
-                    set threadMsgs to threadMsgs & sentMsgs
-                end try
+            repeat with acct in accounts
+                repeat with mbName in {"INBOX", "Sent Messages", "Sent", "Gesendet", "Archive", "Archiv", "All Mail"}
+                    try
+                        set mb to mailbox mbName of acct
+                        set matches to (every message of mb whose subject contains baseSubject)
+                        set threadMsgs to threadMsgs & matches
+                    end try
+                end repeat
             end repeat
         end try
 
-        -- Limit to most recent 20 messages
         set msgCount to count of threadMsgs
         if msgCount > 20 then
             set threadMsgs to items (msgCount - 19) thru msgCount of threadMsgs
         end if
 
-        set output to ""
         repeat with msg in threadMsgs
             set output to output & "FROM:" & (sender of msg) & linefeed
             try
-                set recipientList to ""
+                set rList to ""
                 repeat with r in to recipients of msg
-                    if recipientList is not "" then set recipientList to recipientList & ", "
-                    set recipientList to recipientList & (address of r)
+                    if rList is not "" then set rList to rList & ", "
+                    set rList to rList & (address of r)
                 end repeat
-                set output to output & "TO:" & recipientList & linefeed
+                set output to output & "TO:" & rList & linefeed
             on error
                 set output to output & "TO:unknown" & linefeed
             end try
@@ -150,38 +207,14 @@ enum MailScripts {
             set output to output & "BODY_END" & linefeed
             set output to output & "---END_MESSAGE---" & linefeed
         end repeat
-        return output
     end tell
-
-    on stripPrefixes(subj)
-        set s to subj
-        set changed to true
-        repeat while changed
-            set changed to false
-            if s starts with "Re: " then
-                set s to text 5 thru -1 of s
-                set changed to true
-            else if s starts with "Fwd: " then
-                set s to text 6 thru -1 of s
-                set changed to true
-            else if s starts with "Re:" then
-                set s to text 4 thru -1 of s
-                set changed to true
-            else if s starts with "Fwd:" then
-                set s to text 5 thru -1 of s
-                set changed to true
-            else if s starts with "AW: " then
-                set s to text 5 thru -1 of s
-                set changed to true
-            else if s starts with "WG: " then
-                set s to text 5 thru -1 of s
-                set changed to true
-            end if
-        end repeat
-        return s
-    end stripPrefixes
+    return output
     """
 
+    /// Write the generated reply into the current compose window.
+    /// Mail-scripting-only path: set `content of outgoing message 1`. If that
+    /// fails (no outgoing message visible to the API), fall back to placing
+    /// the text on the clipboard + activating Mail so the user can paste.
     static func insertReply(_ text: String) -> String {
         let escaped = text
             .replacingOccurrences(of: "\\", with: "\\\\")
@@ -189,25 +222,28 @@ enum MailScripts {
         let lines = escaped.components(separatedBy: "\n")
         let asString = lines.joined(separator: "\" & return & \"")
         return """
+        set insertedViaAPI to false
         tell application "Mail"
             try
-                set outMsg to outgoing message 1
-                set oldContent to content of outMsg
-                set content of outMsg to "\(asString)" & return & return & oldContent
+                if (count of outgoing messages) > 0 then
+                    set outMsg to outgoing message 1
+                    set oldContent to ""
+                    try
+                        set oldContent to content of outMsg
+                    end try
+                    set content of outMsg to "\(asString)" & return & return & oldContent
+                    set insertedViaAPI to true
+                end if
             on error errMsg
-                -- Fallback: use clipboard and paste
-                set the clipboard to "\(asString)"
-                tell application "System Events"
-                    tell process "Mail"
-                        set frontmost to true
-                        delay 0.2
-                        keystroke "a" using command down
-                        delay 0.1
-                        keystroke "v" using command down
-                    end tell
-                end tell
+                -- fall through
             end try
+            activate
         end tell
+
+        if not insertedViaAPI then
+            set the clipboard to "\(asString)"
+        end if
+        return "OK"
         """
     }
 
