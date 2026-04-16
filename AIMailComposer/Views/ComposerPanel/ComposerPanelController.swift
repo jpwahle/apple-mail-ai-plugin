@@ -107,7 +107,7 @@ final class ComposerPanelController: NSObject {
     }
 }
 
-extension ComposerPanelController: @preconcurrency NSWindowDelegate {
+extension ComposerPanelController: NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
         // Runs when closed via standard red close button OR via closePanel().
         // Drop references so showPanel() creates a fresh instance next time.

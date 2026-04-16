@@ -79,8 +79,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil,
             queue: .main
         ) { [weak self] _ in
+            guard let self else { return }
             Task { @MainActor in
-                self?.refreshHotkey()
+                self.refreshHotkey()
             }
         }
     }

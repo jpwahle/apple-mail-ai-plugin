@@ -48,12 +48,6 @@ Grab the latest `.dmg` from [Releases](../../releases), open it, and drag **AI M
 > xattr -cr /Applications/AI\ Mail\ Composer.app
 > ```
 
-### Homebrew (coming soon)
-
-```
-brew install --cask ai-mail-composer
-```
-
 ## Get Your API Key
 
 AI Mail Composer calls AI providers directly — you'll need an API key from at least one provider. Pick whichever you prefer:
