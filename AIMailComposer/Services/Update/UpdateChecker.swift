@@ -128,8 +128,11 @@ final class UpdateChecker: ObservableObject {
 
         state = .installing
 
+        let appBundlePath = Bundle.main.bundlePath
+
         Task.detached {
-            let mountPoint = "/tmp/aimail-update"
+            let mountPoint = FileManager.default.temporaryDirectory
+                .appendingPathComponent("aimail-update-mount").path
 
             do {
                 // Clean up any leftover mount
@@ -143,12 +146,11 @@ final class UpdateChecker: ObservableObject {
                 let mount = Process()
                 mount.executableURL = URL(fileURLWithPath: "/usr/bin/hdiutil")
                 mount.arguments = ["attach", dmgPath.path, "-nobrowse", "-readonly", "-mountpoint", mountPoint]
-                let mountPipe = Pipe()
-                mount.standardError = mountPipe
                 try mount.run()
                 mount.waitUntilExit()
 
                 guard mount.terminationStatus == 0 else {
+                    self.detach(mountPoint)
                     await MainActor.run { self.state = .failed("Failed to mount update DMG.") }
                     return
                 }
@@ -162,7 +164,7 @@ final class UpdateChecker: ObservableObject {
                 }
 
                 let source = "\(mountPoint)/\(appName)"
-                let dest = Bundle.main.bundlePath
+                let dest = appBundlePath
 
                 // Replace app via rsync
                 let rsync = Process()
