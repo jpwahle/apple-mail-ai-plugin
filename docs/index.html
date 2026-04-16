@@ -570,7 +570,71 @@
   </section>
 
   <script>
-    // JS will be added in subsequent tasks
+    (function() {
+      var inputEl = document.getElementById('hero-input');
+      var cursorEl = document.getElementById('hero-cursor');
+      var btnEl = document.getElementById('hero-generate-btn');
+      var outputZone = document.getElementById('hero-output-zone');
+      var outputText = document.getElementById('hero-output-text');
+
+      var inputMsg = 'hey yeah that wroks for me, lets do thurday lunch im free after 1 lol';
+      var outputMsg = 'Hi Sarah, Thursday lunch sounds great! I\u2019m available any time after 1 PM. Want to meet at the usual place?';
+      var outputWords = outputMsg.split(' ');
+
+      function runCycle() {
+        // Reset
+        inputEl.textContent = '';
+        inputEl.appendChild(cursorEl);
+        outputZone.classList.remove('visible');
+        outputText.innerHTML = '';
+        btnEl.classList.remove('pulse');
+
+        var charIdx = 0;
+
+        // Phase 1: Type input char by char
+        var typeTimer = setInterval(function() {
+          if (charIdx < inputMsg.length) {
+            inputEl.insertBefore(document.createTextNode(inputMsg[charIdx]), cursorEl);
+            charIdx++;
+          } else {
+            clearInterval(typeTimer);
+            // Phase 2: Button pulse
+            setTimeout(function() {
+              cursorEl.style.display = 'none';
+              btnEl.classList.add('pulse');
+
+              setTimeout(function() {
+                btnEl.classList.remove('pulse');
+                // Phase 3: Show shimmer
+                outputZone.classList.add('visible');
+                outputText.innerHTML = '<div class="shimmer-bar"></div><div class="shimmer-bar"></div><div class="shimmer-bar"></div>';
+
+                // Phase 4: Stream output word by word
+                setTimeout(function() {
+                  outputText.textContent = '';
+                  var wordIdx = 0;
+                  var wordTimer = setInterval(function() {
+                    if (wordIdx < outputWords.length) {
+                      outputText.textContent += (wordIdx > 0 ? ' ' : '') + outputWords[wordIdx];
+                      wordIdx++;
+                    } else {
+                      clearInterval(wordTimer);
+                      // Phase 5: Hold, then restart
+                      setTimeout(function() {
+                        cursorEl.style.display = '';
+                        runCycle();
+                      }, 3000);
+                    }
+                  }, 60);
+                }, 800);
+              }, 300);
+            }, 500);
+          }
+        }, 40);
+      }
+
+      runCycle();
+    })();
   </script>
 </body>
 </html>
