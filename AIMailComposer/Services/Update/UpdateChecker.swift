@@ -190,6 +190,7 @@ final class UpdateChecker: ObservableObject {
                 exit(0)
 
             } catch {
+                self.detach(mountPoint)
                 await MainActor.run {
                     self.state = .failed("Install error: \(error.localizedDescription)")
                 }
