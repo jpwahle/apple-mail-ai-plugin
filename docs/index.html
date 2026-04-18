@@ -3,12 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Mail Composer — AI-powered email replies for Apple Mail</title>
-  <meta name="description" content="A native macOS menu bar app that uses AI to help you write email replies in Apple Mail. Open source, bring your own API key.">
-  <meta property="og:title" content="AI Mail Composer">
-  <meta property="og:description" content="Type your thoughts. AI writes the email.">
-  <meta property="og:image" content="https://jpwahle.github.io/ai-apple-mail/logo.png">
+  <title>Apple Mail AI Plugin — AI email replies for Apple Mail (Claude, GPT, Gemini)</title>
+  <meta name="description" content="Apple Mail AI Plugin is a free, open-source macOS menu bar app that uses AI — Claude, ChatGPT, and Gemini — to write email replies directly inside Apple Mail. Bring your own API key. No accounts, no subscriptions.">
+  <meta name="keywords" content="Apple Mail AI Plugin, Apple Mail AI, AI email reply, macOS Mail AI, Apple Mail ChatGPT, Apple Mail Claude, Apple Mail Gemini, AI Mail plugin, Mail.app AI, AI email assistant macOS, open source Apple Mail AI">
+  <meta name="author" content="Jan Philip Wahle">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="application-name" content="Apple Mail AI Plugin">
+  <meta name="apple-mobile-web-app-title" content="Apple Mail AI Plugin">
+
+  <link rel="canonical" href="https://jpwahle.github.io/ai-apple-mail/">
   <link rel="icon" href="logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Apple Mail AI Plugin">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://jpwahle.github.io/ai-apple-mail/">
+  <meta property="og:title" content="Apple Mail AI Plugin — AI email replies for Apple Mail">
+  <meta property="og:description" content="A native macOS menu bar app that uses AI (Claude, GPT, Gemini) to write email replies in Apple Mail. Open source. Bring your own API key.">
+  <meta property="og:image" content="https://jpwahle.github.io/ai-apple-mail/logo.png">
+  <meta property="og:image:alt" content="Apple Mail AI Plugin logo">
+  <meta property="og:image:width" content="1024">
+  <meta property="og:image:height" content="1024">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Apple Mail AI Plugin">
+  <meta name="twitter:description" content="Type your thoughts. AI writes the email — directly in Apple Mail. Claude, GPT, Gemini. Open source.">
+  <meta name="twitter:image" content="https://jpwahle.github.io/ai-apple-mail/logo.png">
+  <meta name="twitter:image:alt" content="Apple Mail AI Plugin logo">
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Apple Mail AI Plugin",
+    "alternateName": ["Apple Mail AI", "AI Mail Plugin for macOS"],
+    "applicationCategory": "ProductivityApplication",
+    "applicationSubCategory": "Email",
+    "operatingSystem": "macOS 14 (Sonoma) or later",
+    "description": "A native macOS menu bar app that uses AI (Claude, ChatGPT, Gemini, OpenRouter) to help you write email replies directly in Apple Mail. Open source, bring your own API key.",
+    "url": "https://jpwahle.github.io/ai-apple-mail/",
+    "downloadUrl": "https://github.com/jpwahle/ai-apple-mail/releases/latest",
+    "installUrl": "https://github.com/jpwahle/ai-apple-mail/releases/latest",
+    "image": "https://jpwahle.github.io/ai-apple-mail/logo.png",
+    "license": "https://github.com/jpwahle/ai-apple-mail/blob/main/LICENSE",
+    "isAccessibleForFree": true,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Jan Philip Wahle",
+      "url": "https://github.com/jpwahle"
+    },
+    "featureList": [
+      "Writes replies directly inside Apple Mail",
+      "Supports Claude, ChatGPT, Gemini, and OpenRouter",
+      "Reads the full email thread for context",
+      "Keyboard shortcut (⌥H) to open from anywhere",
+      "Streaming responses",
+      "Automatic language matching",
+      "API keys stored in macOS Keychain",
+      "No accounts, subscriptions, or telemetry"
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the Apple Mail AI Plugin?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Apple Mail AI Plugin is a free, open-source macOS menu bar app that uses AI — Claude, ChatGPT, Gemini, or any OpenRouter model — to help you write email replies directly inside Apple Mail."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which AI models does the Apple Mail AI Plugin support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It supports Anthropic Claude, OpenAI GPT, Google Gemini, and any model available through OpenRouter. You bring your own API key from the provider of your choice."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the Apple Mail AI Plugin free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The app is free and open source under the MIT license. You only pay the AI provider for API usage using your own API key."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does the Apple Mail AI Plugin send my email data anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Your email content is sent only to the AI provider you choose. There are no analytics, no telemetry, and no middleman. API keys are stored in the macOS Keychain."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What versions of macOS does it support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "macOS 14 (Sonoma) or later."
+        }
+      }
+    ]
+  }
+  </script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -533,26 +648,26 @@
   <!-- Laurel Badge -->
   <section class="laurel-section">
     <div class="container">
-      <img src="logo.png" class="laurel-logo" alt="AI Mail Composer">
+      <img src="logo.png" class="laurel-logo" alt="Apple Mail AI Plugin app icon">
       <div class="laurel-badge">
         <img src="laurel.svg" class="laurel-svg" alt="">
         <div class="laurel-text">
-          <div class="laurel-heading">#1 Apple Mail<br>AI Integration</div>
+          <div class="laurel-heading">#1 Apple Mail<br>AI Plugin</div>
           <div class="laurel-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         </div>
       </div>
       <br>
-      <div class="open-source-badge">Open Source</div>
+      <div class="open-source-badge">Open Source &middot; MIT</div>
       <br>
-      <a href="https://github.com/jpwahle/ai-apple-mail/releases/latest" class="download-btn" id="download-btn">Download Latest</a>
+      <a href="https://github.com/jpwahle/ai-apple-mail/releases/latest" class="download-btn" id="download-btn" aria-label="Download the Apple Mail AI Plugin for macOS">Download Latest</a>
     </div>
   </section>
 
   <!-- Hero -->
-  <section class="hero">
+  <section class="hero" aria-labelledby="hero-heading">
     <div class="container">
-      <h1 class="hero-headline">Type your thoughts. AI writes the email.</h1>
-      <p class="hero-sub">A native macOS menu bar app for Apple Mail.</p>
+      <h1 class="hero-headline" id="hero-heading">Apple Mail AI Plugin</h1>
+      <p class="hero-sub">Type your thoughts. AI writes the email — right inside Apple Mail. Claude, GPT, Gemini. Open source.</p>
 
       <div class="mac-window hero-window">
         <div class="mac-titlebar">
@@ -561,7 +676,7 @@
             <div class="mac-dot mac-dot--yellow"></div>
             <div class="mac-dot mac-dot--green"></div>
           </div>
-          <div class="mac-title">AI Mail Composer</div>
+          <div class="mac-title">Apple Mail AI Plugin</div>
         </div>
         <div class="mac-body">
           <div class="hero-input-zone">
@@ -630,23 +745,23 @@
             <div class="mac-dot mac-dot--yellow"></div>
             <div class="mac-dot mac-dot--green"></div>
           </div>
-          <div class="mac-title">AI Mail Composer &mdash; Settings</div>
+          <div class="mac-title">Apple Mail AI Plugin &mdash; Settings</div>
         </div>
         <div class="mac-body">
           <div class="model-selector-label">Model</div>
           <div class="model-dropdown">
             <div class="model-option model-option--selected">
               <span class="model-dot" style="background: #10a37f;"></span>
-              GPT-4o
+              ChatGPT
               <span class="model-check">&#10003;</span>
             </div>
             <div class="model-option">
               <span class="model-dot" style="background: #d97706;"></span>
-              Claude Sonnet 4
+              Claude
             </div>
             <div class="model-option">
               <span class="model-dot" style="background: #4285f4;"></span>
-              Gemini 2.5 Pro
+              Gemini
             </div>
           </div>
         </div>
@@ -667,7 +782,7 @@
             <div class="mac-dot mac-dot--yellow"></div>
             <div class="mac-dot mac-dot--green"></div>
           </div>
-          <div class="mac-title">AI Mail Composer &mdash; API Keys</div>
+          <div class="mac-title">Apple Mail AI Plugin &mdash; API Keys</div>
         </div>
         <div class="mac-body">
           <div class="key-settings">

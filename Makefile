@@ -1,4 +1,4 @@
-APP_NAME = Apple Mail AI Composer
+APP_NAME = Apple Mail AI Plugin
 BUNDLE_NAME = AIMailComposer
 BUNDLE_ID = com.aiMailComposer
 VERSION = 0.1.0

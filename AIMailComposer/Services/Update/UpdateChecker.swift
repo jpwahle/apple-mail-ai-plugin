@@ -217,7 +217,7 @@ final class UpdateChecker: ObservableObject {
 
         let alert = NSAlert()
         alert.messageText = "Update Available"
-        alert.informativeText = "Apple Mail AI Composer v\(version) is ready. Relaunch to update?"
+        alert.informativeText = "Apple Mail AI Plugin v\(version) is ready. Relaunch to update?"
         alert.addButton(withTitle: "Relaunch Now")
         alert.addButton(withTitle: "Later")
         alert.alertStyle = .informational

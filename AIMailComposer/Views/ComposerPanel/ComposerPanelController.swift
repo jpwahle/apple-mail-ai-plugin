@@ -32,7 +32,7 @@ final class ComposerPanelController: NSObject {
             backing: .buffered,
             defer: false
         )
-        panel.title = "Apple Mail AI Composer"
+        panel.title = "Apple Mail AI Plugin"
         panel.titlebarAppearsTransparent = true
         panel.titleVisibility = .hidden
         panel.level = .floating

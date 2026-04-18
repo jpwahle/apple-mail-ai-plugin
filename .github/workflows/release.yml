@@ -84,7 +84,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
-          name: Apple Mail AI Composer ${{ steps.version.outputs.tag }}
+          name: Apple Mail AI Plugin ${{ steps.version.outputs.tag }}
           files: build/AIMailComposer.dmg
           make_latest: true
           generate_release_notes: true

@@ -23,7 +23,7 @@ final class OpenRouterClient: AIClient {
                     request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
                     request.setValue("application/json", forHTTPHeaderField: "content-type")
                     request.setValue("https://github.com/aimail", forHTTPHeaderField: "HTTP-Referer")
-                    request.setValue("Apple Mail AI Composer", forHTTPHeaderField: "X-Title")
+                    request.setValue("Apple Mail AI Plugin", forHTTPHeaderField: "X-Title")
 
                     let body: [String: Any] = [
                         "model": model,

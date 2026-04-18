@@ -7,6 +7,6 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSAppleEventsUsageDescription</key>
-	<string>Apple Mail AI Composer needs access to Mail to read email threads and insert composed replies.</string>
+	<string>Apple Mail AI Plugin needs access to Mail to read email threads and insert composed replies.</string>
 </dict>
 </plist>

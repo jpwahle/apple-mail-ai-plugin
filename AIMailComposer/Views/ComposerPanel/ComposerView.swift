@@ -102,7 +102,7 @@ struct ComposerView: View {
 
     private var headerTitle: String {
         if case .loadingContext = viewModel.state { return "Reading Mail…" }
-        guard let ctx = viewModel.context else { return "Apple Mail AI Composer" }
+        guard let ctx = viewModel.context else { return "Apple Mail AI Plugin" }
         return ctx.displaySubject
     }
 
