@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="logo-nobg.png" width="128" height="128" alt="Apple Mail AI Plugin logo">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="logo-dark.png">
+    <img src="logo-light.png" width="128" height="128" alt="Apple Mail AI Plugin logo">
+  </picture>
 </p>
 
 <h1 align="center">Apple Mail AI Plugin</h1>
