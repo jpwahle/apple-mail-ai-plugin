@@ -31,4 +31,4 @@ Package.resolved
 .superpowers/
 
 # Docs
-docs/
+# GitHub Pages is published from docs/, so site assets in that directory must be tracked.
