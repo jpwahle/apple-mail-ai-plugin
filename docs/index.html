@@ -8,13 +8,14 @@
   <meta name="keywords" content="Apple Mail AI Plugin, Apple Mail AI, AI email reply, macOS Mail AI, Apple Mail ChatGPT, Apple Mail Claude, Apple Mail Gemini, AI Mail plugin, Mail.app AI, AI email assistant macOS, open source Apple Mail AI">
   <meta name="author" content="Jan Philip Wahle">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#F5F1EA" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#17151A" media="(prefers-color-scheme: dark)">
   <meta name="application-name" content="Apple Mail AI Plugin">
   <meta name="apple-mobile-web-app-title" content="Apple Mail AI Plugin">
 
   <link rel="canonical" href="https://jpwahle.github.io/ai-apple-mail/">
-  <link rel="icon" href="logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="icon" href="logo-light.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo-light.png">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
@@ -23,7 +24,7 @@
   <meta property="og:url" content="https://jpwahle.github.io/ai-apple-mail/">
   <meta property="og:title" content="Apple Mail AI Plugin — AI email replies for Apple Mail">
   <meta property="og:description" content="A native macOS menu bar app that uses AI (Claude, GPT, Gemini) to write email replies in Apple Mail. Open source. Bring your own API key.">
-  <meta property="og:image" content="https://jpwahle.github.io/ai-apple-mail/logo.png">
+  <meta property="og:image" content="https://jpwahle.github.io/ai-apple-mail/logo-light.png">
   <meta property="og:image:alt" content="Apple Mail AI Plugin logo">
   <meta property="og:image:width" content="1024">
   <meta property="og:image:height" content="1024">
@@ -32,7 +33,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Apple Mail AI Plugin">
   <meta name="twitter:description" content="Type your thoughts. AI writes the email — directly in Apple Mail. Claude, GPT, Gemini. Open source.">
-  <meta name="twitter:image" content="https://jpwahle.github.io/ai-apple-mail/logo.png">
+  <meta name="twitter:image" content="https://jpwahle.github.io/ai-apple-mail/logo-light.png">
   <meta name="twitter:image:alt" content="Apple Mail AI Plugin logo">
 
   <!-- JSON-LD: SoftwareApplication -->
@@ -49,7 +50,7 @@
     "url": "https://jpwahle.github.io/ai-apple-mail/",
     "downloadUrl": "https://github.com/jpwahle/ai-apple-mail/releases/latest",
     "installUrl": "https://github.com/jpwahle/ai-apple-mail/releases/latest",
-    "image": "https://jpwahle.github.io/ai-apple-mail/logo.png",
+    "image": "https://jpwahle.github.io/ai-apple-mail/logo-light.png",
     "license": "https://github.com/jpwahle/ai-apple-mail/blob/main/LICENSE",
     "isAccessibleForFree": true,
     "offers": {
@@ -83,843 +84,1067 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "What is the Apple Mail AI Plugin?",
+        "name": "Do I need to create an account?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "The Apple Mail AI Plugin is a free, open-source macOS menu bar app that uses AI — Claude, ChatGPT, Gemini, or any OpenRouter model — to help you write email replies directly inside Apple Mail."
+          "text": "No. The plugin runs entirely on your Mac. You bring API keys from Anthropic, OpenAI, or Google, and they sit in the macOS Keychain alongside your other credentials."
         }
       },
       {
         "@type": "Question",
-        "name": "Which AI models does the Apple Mail AI Plugin support?",
+        "name": "Does my email get sent to some server?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "It supports Anthropic Claude, OpenAI GPT, Google Gemini, and any model available through OpenRouter. You bring your own API key from the provider of your choice."
+          "text": "Only to the AI provider you chose, using your key. There is no middle-man server. The plugin talks to the provider API directly."
         }
       },
       {
         "@type": "Question",
-        "name": "Is the Apple Mail AI Plugin free?",
+        "name": "Which macOS versions are supported?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. The app is free and open source under the MIT license. You only pay the AI provider for API usage using your own API key."
+          "text": "macOS Sonoma (14) and newer, on Intel and Apple Silicon."
         }
       },
       {
         "@type": "Question",
-        "name": "Does the Apple Mail AI Plugin send my email data anywhere?",
+        "name": "How much does it cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. Your email content is sent only to the AI provider you choose. There are no analytics, no telemetry, and no middleman. API keys are stored in the macOS Keychain."
+          "text": "The plugin is free and open source. You pay the AI provider directly for usage — typically fractions of a cent per reply."
         }
       },
       {
         "@type": "Question",
-        "name": "What versions of macOS does it support?",
+        "name": "Is it affiliated with Apple?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "macOS 14 (Sonoma) or later."
+          "text": "No. This is an independent open-source project. \"Apple Mail\" is used descriptively to identify the mail app it extends."
         }
       }
     ]
   }
   </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      --bg: #ffffff;
-      --bg-soft: #f8f8fa;
-      --text: #111111;
-      --text-secondary: #666666;
-      --text-muted: #999999;
-      --border: #e5e5e5;
-      --shadow: 0 2px 24px rgba(0, 0, 0, 0.08);
-      --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.12);
-      --radius: 12px;
-      --blue: #4a9eff;
-      --green: #28c840;
-      --gold: #f5a623;
-      --max-width: 900px;
-      --traffic-red: #ff5f57;
-      --traffic-yellow: #febc2e;
-      --traffic-green: #28c840;
-    }
-
+    /* ==========================================================
+       Base + tokens
+       ========================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
+    :root {
+      --bg: #F5F1EA;
+      --ink: #1A1714;
+      --dim: #6E6558;
+      --line: #E3DCCC;
+      --card: #FDFAF3;
+      --accent: #D97757;
+    }
+    [data-theme="dark"] {
+      --bg: #17151A;
+      --ink: #EAE5DC;
+      --dim: #8A8374;
+      --line: #2A2720;
+      --card: #1E1B1F;
+    }
+
     body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      transition: background 0.25s ease, color 0.25s ease;
+      overflow-x: hidden;
     }
+    em { font-style: italic; }
+    kbd { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+    a { color: inherit; }
 
-    /* ---- Layout ---- */
-    .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 0 24px;
+    .serif { font-family: 'Instrument Serif', 'Playfair Display', Georgia, serif; font-weight: 400; }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+    @keyframes blink { 0%, 50% { opacity: 1 } 51%, 100% { opacity: 0 } }
+    @keyframes pulse-dot { 0%, 60%, 100% { opacity: 0.25 } 30% { opacity: 1 } }
+
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+    .fade-up.in { opacity: 1; transform: translateY(0); }
+
+    /* ==========================================================
+       Theme toggle (floating, top-right)
+       ========================================================== */
+    .theme-toggle {
+      position: fixed; top: 16px; right: 16px; z-index: 9999;
+      width: 36px; height: 36px; border-radius: 999px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 8px 24px -8px rgba(0,0,0,0.15);
+      cursor: pointer; color: var(--ink);
+      font-size: 16px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.15s;
     }
-
-    /* ---- macOS Window Component ---- */
-    .mac-window {
-      background: #fff;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      border: 1px solid var(--border);
+    [data-theme="dark"] .theme-toggle {
+      background: rgba(20,20,22,0.9);
+      border-color: rgba(255,255,255,0.08);
+      color: #E8E5DF;
     }
+    .theme-toggle:hover { opacity: 0.8; }
 
-    .mac-titlebar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
-      background: #f9f9f9;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .mac-dots {
-      display: flex;
-      gap: 6px;
-    }
-
-    .mac-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-
-    .mac-dot--red { background: var(--traffic-red); }
-    .mac-dot--yellow { background: var(--traffic-yellow); }
-    .mac-dot--green { background: var(--traffic-green); }
-
-    .mac-title {
+    /* ==========================================================
+       Nav
+       ========================================================== */
+    .site-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 48px;
+      max-width: 1400px; margin: 0 auto;
       font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 500;
-      flex: 1;
-      text-align: center;
-      margin-right: 44px;
     }
+    .site-nav .brand { display: flex; align-items: center; gap: 12px; }
+    .site-nav .brand-name { font-family: 'Instrument Serif', Georgia, serif; font-size: 22px; }
+    .site-nav .links { display: flex; gap: 28px; color: var(--dim); }
+    .site-nav .links a { text-decoration: none; transition: opacity 0.15s; }
+    .site-nav .links a:hover { opacity: 0.65; }
 
-    .mac-body {
-      padding: 24px;
+    /* ==========================================================
+       Hero
+       ========================================================== */
+    .hero { padding: 60px 48px 80px; max-width: 1200px; margin: 0 auto; }
+    .hero-top { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-bottom: 40px; }
+
+    .laurel-wrap {
+      position: relative; display: inline-flex; align-items: center;
+      justify-content: center; width: 200px; max-width: 85vw;
+      color: var(--ink);
     }
-
-    /* ---- Scroll Reveal ---- */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ---- Keyframes ---- */
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
-
-    /* ---- Responsive ---- */
-    @media (max-width: 640px) {
-      .container { padding: 0 16px; }
-      .mac-body { padding: 16px; }
-      .mac-titlebar { padding: 10px 12px; }
-      .mac-dot { width: 10px; height: 10px; }
-    }
-
-    /* ---- Laurel Badge ---- */
-    .laurel-section {
-      padding: 64px 0 32px;
-      text-align: center;
-    }
-
-    .laurel-logo {
-      display: block;
-      width: 80px;
-      height: 80px;
-      border-radius: 18px;
-      margin: 0 auto 16px;
-    }
-
-    .laurel-badge {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 24px;
-    }
-
     .laurel-svg {
-      width: 220px;
-      height: auto;
+      display: block; width: 100%; height: auto;
     }
-
-    .laurel-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+    .laurel-wrap .laurel-center {
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%, -50%); text-align: center;
+    }
+    .laurel-wrap .stars { font-size: 18px; color: var(--accent); letter-spacing: 3px; line-height: 1; }
+    .laurel-wrap .subtitle {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px; letter-spacing: 1.2px; color: var(--ink); margin-top: 4px;
       white-space: nowrap;
     }
 
-    .laurel-heading {
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.3;
-      color: var(--text);
+    .eyebrow {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11px; color: var(--dim); letter-spacing: 1.5px; text-transform: uppercase;
     }
-
-    .laurel-stars {
-      font-size: 22px;
-      color: var(--gold);
-      margin-top: 4px;
-      letter-spacing: 2px;
-    }
-
-    .open-source-badge {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 14px;
-      margin-bottom: 16px;
-    }
-
-    .download-btn {
-      display: inline-block;
-      background: var(--text);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 600;
-      padding: 12px 32px;
-      border-radius: 10px;
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-
-    .download-btn:hover {
-      opacity: 0.85;
-    }
-
-    /* ---- Hero ---- */
-    .hero {
-      padding: 48px 0 80px;
+    .hero h1 {
+      font-family: 'Instrument Serif', Georgia, serif; font-weight: 400;
+      font-size: clamp(56px, 9vw, 128px);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
       text-align: center;
+      margin: 0 0 32px;
+      text-wrap: balance;
+    }
+    .hero h1 em { color: var(--accent); font-style: italic; }
+    .hero .tagline {
+      font-size: 20px; line-height: 1.5; color: var(--dim); text-align: center;
+      max-width: 620px; margin: 0 auto 48px;
+      text-wrap: balance;
+    }
+    .cta-row { display: flex; gap: 14px; justify-content: center; margin-bottom: 72px; flex-wrap: wrap; }
+    .btn {
+      padding: 16px 28px; font-size: 15px; font-weight: 500;
+      border-radius: 8px; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 10px;
+      transition: transform 0.15s ease, background 0.15s ease;
+      cursor: pointer; border: none; font-family: inherit;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn--primary { background: var(--ink); color: var(--bg); }
+    .btn--primary .meta { opacity: 0.5; font-size: 12px; }
+    .btn-apple { flex-shrink: 0; margin-top: -2px; }
+    .btn--ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 16px 24px; }
+
+    .demo-wrap { max-width: 680px; margin: 0 auto; }
+
+    /* ==========================================================
+       Features
+       ========================================================== */
+    .features { padding: 80px 48px; max-width: 1200px; margin: 0 auto; }
+    .section-head { text-align: center; margin-bottom: 80px; }
+    .section-head .eyebrow { color: var(--accent); letter-spacing: 2px; display: block; margin-bottom: 14px; }
+    .section-head h2 {
+      font-family: 'Instrument Serif', Georgia, serif; font-weight: 400;
+      font-size: clamp(40px, 5vw, 64px); margin: 0;
+      letter-spacing: -0.01em; text-wrap: balance;
+    }
+    .section-head h2 em { color: var(--accent); font-style: italic; }
+    .feature-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+      padding: 80px 0; border-top: 1px solid var(--line);
+    }
+    .feature-row.flip { direction: rtl; }
+    .feature-row > * { direction: ltr; }
+    .feature-row .index {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11px; color: var(--accent); letter-spacing: 2px; margin-bottom: 16px;
+    }
+    .feature-row h3 {
+      font-family: 'Instrument Serif', Georgia, serif; font-weight: 400;
+      font-size: clamp(32px, 4vw, 48px); margin: 0 0 20px;
+      letter-spacing: -0.01em; text-wrap: balance;
+    }
+    .feature-row p { font-size: 17px; line-height: 1.55; color: var(--dim); max-width: 440px; }
+
+    /* ==========================================================
+       FAQ
+       ========================================================== */
+    .faq { padding: 120px 48px; max-width: 1200px; margin: 0 auto; }
+    .faq-list { max-width: 780px; margin: 0 auto; }
+    .faq-item { border-top: 1px solid var(--line); }
+    .faq-item:last-child { border-bottom: 1px solid var(--line); }
+    .faq-btn {
+      width: 100%; background: transparent; border: none; cursor: pointer;
+      padding: 22px 0; text-align: left; color: inherit;
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: inherit; font-size: 18px; font-weight: 500;
+    }
+    .faq-btn .mark { color: var(--accent); font-size: 20px; transition: transform 0.2s; }
+    .faq-item.open .faq-btn .mark { transform: rotate(45deg); }
+    .faq-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .faq-item.open .faq-body { max-height: 400px; }
+    .faq-body-inner { padding-bottom: 22px; font-size: 15px; line-height: 1.6; color: var(--dim); max-width: 640px; }
+
+    /* ==========================================================
+       OSS stats card
+       ========================================================== */
+    .oss { padding: 0 48px 120px; max-width: 1200px; margin: 0 auto; }
+    .oss-card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+      padding: 64px; text-align: center;
+    }
+    .oss-card .eyebrow { color: var(--accent); letter-spacing: 2px; display: block; margin-bottom: 14px; }
+    .oss-card h2 {
+      font-family: 'Instrument Serif', Georgia, serif; font-weight: 400;
+      font-size: clamp(36px, 5vw, 56px); margin: 0 0 20px;
+      letter-spacing: -0.01em; text-wrap: balance;
+    }
+    .oss-card p { font-size: 16px; line-height: 1.6; color: var(--dim); max-width: 520px; margin: 0 auto 36px; }
+    .stats { display: flex; gap: 48px; justify-content: center; margin-bottom: 36px; flex-wrap: wrap; }
+    .stat .n { font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; color: var(--accent); line-height: 1; }
+    .stat .l {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px;
     }
 
-    .hero-headline {
-      font-size: 44px;
-      font-weight: 700;
-      line-height: 1.15;
-      letter-spacing: -0.5px;
-      margin-bottom: 12px;
+    /* ==========================================================
+       Footer
+       ========================================================== */
+    .site-footer { border-top: 1px solid var(--line); max-width: 1200px; margin: 0 auto; padding: 40px 48px; }
+    .site-footer-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: var(--dim); flex-wrap: wrap; gap: 16px;
     }
+    .site-footer a { text-decoration: none; transition: opacity 0.15s; }
+    .site-footer a:hover { opacity: 0.65; }
+    .site-footer .links { display: flex; gap: 20px; }
 
-    .hero-sub {
-      font-size: 18px;
-      color: var(--text-secondary);
-      margin-bottom: 48px;
-    }
-
-    .hero-window {
-      text-align: left;
-    }
-
-    .hero-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-
-    .hero-input {
-      font-size: 15px;
-      line-height: 1.6;
-      color: var(--text);
-      min-height: 48px;
-      padding: 12px 16px;
-      background: var(--bg-soft);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    .cursor {
-      display: inline-block;
-      width: 2px;
-      height: 1em;
-      background: var(--text);
-      vertical-align: text-bottom;
-      animation: blink 1s step-end infinite;
-    }
-
-    .hero-generate-btn {
-      display: block;
-      width: 100%;
-      margin: 16px 0;
-      padding: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      font-family: var(--font);
-      color: #fff;
-      background: var(--blue);
-      border: none;
-      border-radius: 8px;
-      cursor: default;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-
-    .hero-generate-btn.pulse {
-      transform: scale(0.97);
-      box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.3);
-    }
-
-    .hero-output-zone {
-      opacity: 0;
-      transition: opacity 0.4s;
-    }
-
-    .hero-output-zone.visible {
-      opacity: 1;
-    }
-
-    .hero-output-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-
-    .hero-output-text {
-      font-size: 15px;
-      line-height: 1.6;
-      color: var(--text);
-      padding: 12px 16px;
-      background: var(--bg-soft);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      min-height: 48px;
-    }
-
-    .shimmer-bar {
-      height: 14px;
-      border-radius: 4px;
-      margin-bottom: 8px;
-      background: linear-gradient(90deg, #e5e5e5 25%, #f0f0f0 50%, #e5e5e5 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-    }
-
-    .shimmer-bar:last-child { width: 60%; margin-bottom: 0; }
-
-    /* ---- Feature Sections ---- */
-    .feature-section {
-      padding: 80px 0;
-    }
-
-    .feature-section--alt {
-      background: var(--bg-soft);
-    }
-
-    .feature-section h2 {
-      font-size: 32px;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .feature-section > .container > p {
-      text-align: center;
-      color: var(--text-secondary);
-      font-size: 17px;
-      margin-bottom: 40px;
-    }
-
-    /* -- Conversation context mock -- */
-    .email-thread {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .email-msg {
-      padding: 12px 16px;
-      background: var(--bg-soft);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    .email-msg--highlight {
-      border-color: var(--blue);
-      background: rgba(74, 158, 255, 0.05);
-    }
-
-    .email-from {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .email-subject {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .email-snippet {
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-
-    .context-indicator {
-      text-align: center;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--blue);
-      padding: 8px;
-    }
-
-    .context-icon {
-      display: inline-block;
-      animation: float 2s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-
-    /* -- Model selector mock -- */
-    .model-selector-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-
-    .model-dropdown {
-      border: 1px solid var(--border);
-      border-radius: 8px;
+    /* ==========================================================
+       Shared: Mail mock, LiveDemo, visuals
+       ========================================================== */
+    .mail-win {
+      background: #FFFFFF; color: #1A1714;
+      border: 1px solid #E8E4DB; border-radius: 14px;
       overflow: hidden;
+      box-shadow: 0 30px 80px -20px rgba(26,23,20,0.18), 0 2px 6px rgba(26,23,20,0.04);
+      font-family: 'Inter', sans-serif;
+      display: flex; flex-direction: column;
     }
-
-    .model-option {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 16px;
-      font-size: 14px;
-      font-weight: 500;
-      border-bottom: 1px solid var(--border);
+    [data-theme="dark"] .mail-win {
+      background: #17171A; color: #E8E5DF; border-color: #2A2A2F;
+      box-shadow: 0 30px 80px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03);
     }
-
-    .model-option:last-child { border-bottom: none; }
-
-    .model-option--selected {
-      background: rgba(74, 158, 255, 0.06);
+    .mail-win .titlebar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #E8E4DB;
+      background: #FBF8F2;
     }
-
-    .model-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
+    [data-theme="dark"] .mail-win .titlebar {
+      border-bottom-color: #2A2A2F; background: #1C1C20;
     }
+    .mail-win .dots { display: flex; gap: 6px; }
+    .mail-win .dot { width: 11px; height: 11px; border-radius: 50%; background: #E0DCD1; }
+    [data-theme="dark"] .mail-win .dot { background: #3A3A3F; }
+    .mail-win .titlebar .title {
+      flex: 1; text-align: center; font-size: 12px; color: #8A8272;
+      font-family: 'Inter', sans-serif; letter-spacing: -0.1px;
+    }
+    [data-theme="dark"] .mail-win .titlebar .title { color: #8A8780; }
+    .mail-win .titlebar-spacer { width: 40px; }
 
-    .model-check {
+    .mail-msg { padding: 16px 20px; border-bottom: 1px solid #EEE8DC; display: flex; gap: 14px; }
+    [data-theme="dark"] .mail-msg { border-bottom-color: #2A2A2F; }
+    .mail-msg:last-child { border-bottom: none; }
+    .mail-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      flex-shrink: 0; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600;
+    }
+    .mail-avatar.you { background: #D97757; }
+    .mail-avatar.peer { background: #9AAE8F; }
+    .mail-body-col { flex: 1; min-width: 0; }
+    .mail-head-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .mail-from { font-size: 13px; font-weight: 600; }
+    .mail-time { font-size: 11px; color: #8A8272; }
+    [data-theme="dark"] .mail-time { color: #8A8780; }
+    .mail-snippet { font-size: 13.5px; line-height: 1.5; color: #35302A; }
+    [data-theme="dark"] .mail-snippet { color: #D0CDC6; }
+    .mail-context-foot {
+      padding: 14px 20px; font-size: 12px; color: var(--accent);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(217,119,87,0.06);
+    }
+    [data-theme="dark"] .mail-context-foot { background: rgba(217,119,87,0.08); }
+
+    /* LiveDemo */
+    .demo {
+      background: #FBF8F2; border: 1px solid #E8E4DB; border-radius: 14px;
+      padding: 18px; color: #1A1714;
+      font-family: 'Inter', sans-serif;
+    }
+    [data-theme="dark"] .demo { background: #1C1C20; border-color: #2A2A2F; color: #E8E5DF; }
+    .demo-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid #E8E4DB;
+    }
+    [data-theme="dark"] .demo-head { border-bottom-color: #2A2A2F; }
+    .demo-label {
+      font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase;
+      color: #8A8272; font-weight: 600;
+    }
+    [data-theme="dark"] .demo-label { color: #8A8780; }
+    .demo-models { display: flex; gap: 4px; flex-wrap: wrap; }
+    .demo-model-chip {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 20px;
+      font-size: 11px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #8A8272;
+      transition: all 0.2s;
+      cursor: default;
+    }
+    [data-theme="dark"] .demo-model-chip { color: #8A8780; }
+    .demo-model-chip.active {
+      background: #FFFFFF; border-color: #E8E4DB; color: #1A1714;
+    }
+    [data-theme="dark"] .demo-model-chip.active { background: #2A2A2F; border-color: #2A2A2F; color: #E8E5DF; }
+    .demo-model-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .demo-model-dot.sm { width: 8px; height: 8px; }
+
+    .demo-section { margin-bottom: 14px; }
+    .demo-section:last-child { margin-bottom: 0; }
+    .demo-section-label {
+      font-size: 10px; color: #8A8272; margin-bottom: 6px;
+      text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600;
+      display: flex; align-items: center; gap: 6px;
+    }
+    [data-theme="dark"] .demo-section-label { color: #8A8780; }
+    .demo-section-label .thinking { color: var(--accent); font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+    .demo-prompt {
+      min-height: 38px; padding: 10px 12px;
+      background: #FFFFFF; border: 1px solid #E8E4DB; border-radius: 8px;
+      font-size: 14px; display: flex; align-items: center; gap: 6px;
+    }
+    [data-theme="dark"] .demo-prompt { background: #0E0E10; border-color: #2A2A2F; }
+    .demo-caret {
+      display: inline-block; width: 2px; height: 16px; background: var(--accent);
+      animation: blink 1s infinite;
+    }
+    .demo-caret.hidden { display: none; }
+    .demo-kbd {
+      font-size: 10px; padding: 3px 7px;
+      background: #F0ECE2; border: 1px solid #E8E4DB;
+      border-radius: 4px; color: #8A8272;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
       margin-left: auto;
-      color: var(--blue);
-      font-weight: 700;
+    }
+    [data-theme="dark"] .demo-kbd { background: #2A2A2F; border-color: #2A2A2F; color: #8A8780; }
+    .demo-reply {
+      min-height: 120px; padding: 14px 16px;
+      background: #FFFFFF; border: 1px solid #E8E4DB; border-radius: 8px;
+      font-size: 14px; line-height: 1.55; white-space: pre-wrap;
+      font-family: 'Inter', sans-serif;
+    }
+    [data-theme="dark"] .demo-reply { background: #0E0E10; border-color: #2A2A2F; }
+    .demo-reply-caret {
+      display: inline-block; width: 8px; height: 16px; margin-left: 2px;
+      background: var(--accent); vertical-align: text-bottom;
+      animation: blink 1s infinite;
+    }
+    .demo-thinking { display: flex; gap: 5px; margin-top: 4px; }
+    .demo-thinking .pd {
+      width: 6px; height: 6px; border-radius: 50%; background: #8A8272;
+      animation: pulse-dot 1.2s infinite;
+    }
+    [data-theme="dark"] .demo-thinking .pd { background: #8A8780; }
+    .demo-thinking .pd:nth-child(2) { animation-delay: 0.15s; }
+    .demo-thinking .pd:nth-child(3) { animation-delay: 0.3s; }
+    .demo-thinking.hidden { display: none; }
+
+    /* Model switch visual */
+    .mviz {
+      background: #FBF8F2; border: 1px solid #E3DCCC; border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 20px 60px -20px rgba(26,23,20,0.15);
+    }
+    [data-theme="dark"] .mviz {
+      background: #1C1C20; border-color: #2A2A2F;
+      box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5);
+    }
+    .mviz-head {
+      font-size: 11px; color: #6E6558; text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 14px; font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    [data-theme="dark"] .mviz-head { color: #8A8374; }
+    .mviz-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px; border: 1px solid #E3DCCC; border-radius: 10px;
+      margin-bottom: 8px; transition: all 0.3s;
+    }
+    [data-theme="dark"] .mviz-row { border-color: #2A2A2F; }
+    .mviz-row.active-claude { border-color: #D97757; background: #FFFFFF; }
+    .mviz-row.active-gpt { border-color: #10A37F; background: #FFFFFF; }
+    .mviz-row.active-gemini { border-color: #4285F4; background: #FFFFFF; }
+    [data-theme="dark"] .mviz-row.active-claude,
+    [data-theme="dark"] .mviz-row.active-gpt,
+    [data-theme="dark"] .mviz-row.active-gemini {
+      background: rgba(255,255,255,0.02);
+    }
+    .mviz-badge {
+      width: 30px; height: 30px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 13px; font-weight: 700;
+    }
+    .mviz-body { flex: 1; }
+    .mviz-name { font-size: 14px; font-weight: 500; }
+    .mviz-sub {
+      font-size: 11px; color: #6E6558;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    [data-theme="dark"] .mviz-sub { color: #8A8374; }
+    .mviz-check {
+      width: 18px; height: 18px; border-radius: 50%;
+      display: none; align-items: center; justify-content: center;
+      color: #fff; font-size: 11px;
+    }
+    .mviz-row.active-claude .mviz-check { display: flex; background: #D97757; }
+    .mviz-row.active-gpt .mviz-check { display: flex; background: #10A37F; }
+    .mviz-row.active-gemini .mviz-check { display: flex; background: #4285F4; }
+
+    /* Keychain viz */
+    .kviz {
+      background: #FBF8F2; border: 1px solid #E3DCCC; border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 20px 60px -20px rgba(26,23,20,0.15);
+    }
+    [data-theme="dark"] .kviz {
+      background: #1C1C20; border-color: #2A2A2F;
+      box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5);
+    }
+    .kviz-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
+    }
+    .kviz-title {
+      font-size: 11px; color: #6E6558; text-transform: uppercase; letter-spacing: 1px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    [data-theme="dark"] .kviz-title { color: #8A8374; }
+    .kviz-chain {
+      font-size: 11px; color: var(--accent); display: flex; gap: 6px; align-items: center;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      min-width: 0; flex-shrink: 1;
+    }
+    .kviz-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; min-width: 0; }
+    .kviz-row + .kviz-row { border-top: 1px solid #E3DCCC; }
+    [data-theme="dark"] .kviz-row + .kviz-row { border-top-color: #2A2A2F; }
+    .kviz-label { font-size: 13px; font-weight: 500; width: 90px; flex-shrink: 0; }
+    .kviz-field {
+      flex: 1 1 0; min-width: 0; font-size: 12px; color: #6E6558;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      background: #F5F1EA; padding: 8px 12px; border-radius: 6px;
+      border: 1px solid #E3DCCC;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    [data-theme="dark"] .kviz-field { color: #8A8374; background: #0E0E10; border-color: #2A2A2F; }
+    .kviz-foot {
+      margin-top: 16px; padding-top: 14px; border-top: 1px solid #E3DCCC;
+      font-size: 11px; color: #6E6558; display: flex; gap: 8px; align-items: center;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    [data-theme="dark"] .kviz-foot { border-top-color: #2A2A2F; color: #8A8374; }
+    .kviz-foot .dotacc { color: var(--accent); }
+
+    /* ==========================================================
+       Responsive
+       ========================================================== */
+    @media (max-width: 820px) {
+      .site-nav, .site-footer { padding-left: 24px; padding-right: 24px; }
+      .site-nav .links { display: none; }
+      .hero, .features, .oss, .faq { padding-left: 24px; padding-right: 24px; }
+      .hero h1 { font-size: clamp(40px, 11vw, 72px); }
+      .section-head h2 { font-size: clamp(32px, 7vw, 48px); }
+      .feature-row { grid-template-columns: 1fr; gap: 32px; padding: 48px 0; }
+      .feature-row.flip { direction: ltr; }
+      .stats { gap: 24px; }
+      .oss-card { padding: 40px 24px; }
+      .feature-row p { max-width: none; }
+      .theme-toggle { top: 10px; right: 10px; width: 32px; height: 32px; }
     }
 
-    /* -- BYOK mock -- */
-    .key-settings {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .key-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      background: var(--bg-soft);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    .key-provider {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .key-field {
-      font-size: 13px;
-      font-family: 'SF Mono', 'Menlo', monospace;
-      color: var(--text-muted);
-    }
-
-    .keychain-badge {
-      text-align: center;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      padding: 8px;
-    }
-
-    /* ---- Footer ---- */
-    .site-footer {
-      padding: 48px 0;
-      text-align: center;
-      border-top: 1px solid var(--border);
-    }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      margin-bottom: 12px;
-    }
-
-    .footer-links a {
-      font-size: 14px;
-      color: var(--text-secondary);
-      text-decoration: none;
-    }
-
-    .footer-links a:hover { color: var(--text); }
-
-    .footer-copy {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    /* ---- Responsive additions ---- */
-    @media (max-width: 640px) {
-      .hero-headline { font-size: 28px; }
-      .hero-sub { font-size: 16px; margin-bottom: 32px; }
-      .feature-section h2 { font-size: 24px; }
-      .feature-section { padding: 56px 0; }
-      .laurel-svg { width: 160px; }
-      .laurel-heading { font-size: 14px; }
-      .laurel-stars { font-size: 18px; }
-      .key-row { flex-direction: column; gap: 4px; align-items: flex-start; }
+    @media (max-width: 520px) {
+      .hero h1 { font-size: clamp(36px, 12vw, 56px); }
+      .hero .tagline { font-size: 16px; }
+      .cta-row { flex-direction: column; align-items: stretch; }
+      .btn { justify-content: center; }
+      .stats { gap: 20px; }
+      .stat .n { font-size: 32px; }
+      .kviz { padding: 16px; }
+      .kviz-row { gap: 10px; }
+      .kviz-label { width: 68px; font-size: 12px; }
+      .kviz-field { font-size: 11px; padding: 7px 10px; }
     }
   </style>
 </head>
-<body>
+<body data-theme="light">
 
-  <!-- Laurel Badge -->
-  <section class="laurel-section">
-    <div class="container">
+  <button type="button" class="theme-toggle" id="theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+
+  <nav class="site-nav">
+    <div class="brand">
       <picture>
         <source media="(prefers-color-scheme: dark)" srcset="logo-dark.png">
-        <img src="logo.png" class="laurel-logo" alt="Apple Mail AI Plugin app icon">
+        <img src="logo-light.png" alt="" width="28" height="28" style="border-radius:6px;display:block;">
       </picture>
-      <div class="laurel-badge">
-        <img src="laurel.svg" class="laurel-svg" alt="">
-        <div class="laurel-text">
-          <div class="laurel-heading">#1 Apple Mail<br>AI Plugin</div>
-          <div class="laurel-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <span class="brand-name">Apple Mail AI Plugin</span>
+    </div>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/jpwahle/ai-apple-mail">GitHub ↗</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-top">
+      <div class="laurel-wrap">
+        <svg class="laurel-svg" viewBox="0 0 2553 801.7" fill="currentColor" aria-hidden="true">
+          <path d="m334.46 49.002c-18.278 12.277-38.479 27.48-54.76 44.437-28.887 30.086-57.536 64.004-82.159 97.941-16.634 22.926-38.215 57.715-50.006 83.305-15.691 34.056-24.985 57.915-33.597 95.332-12.132 52.713-10.459 106.81 1.863 157.81 18.129 75.031 76.15 137.81 134.13 188.77 45.358 39.863 106.34 65.942 159.92 85.098l5.5363-14.63c-53.09-18.97-109.36-44.31-152.83-82.56-55.92-49.21-107.57-109.22-129.85-180.73-13.57-43.53-16.72-91.29-9.6-137.54 6.2375-40.516 21.918-81.121 37.193-118.04 12.558-30.349 27.2-53.991 45.06-78.892 22.645-31.574 47.529-62.365 73.981-90.48 17.123-18.199 40.023-34.629 58.415-46.982z"/>
+          <path d="m311.24 756.98s-37.634-11.898-67.5-8.3929c-47.415 5.5642-51.786 35-51.786 35s19.022 11.809 59.821 7.3214c47.796-5.2574 59.464-33.929 59.464-33.929z"/>
+          <path d="m247.15 713.02s-31.716-15.044-61.786-14.821c-52.058 0.38562-55.179 28.036-55.179 28.036s18.843 13.595 60.536 13.036c48.08-0.64498 56.429-26.25 56.429-26.25z"/>
+          <path d="m199.74 666.79s-30.157-26.43-59.326-33.739c-50.498-12.653-67.224 16.73-67.224 16.73s18.771 22.52 59.277 32.411c46.711 11.406 67.273-15.402 67.273-15.402z"/>
+          <path d="m146.2 595.58s-25.79-27.185-61.094-38.032c-46.073-14.156-67.729 13.636-68.361 14.331 0 0 18.879 23.762 58.267 34.179 52.832 13.973 71.188-10.478 71.188-10.478z"/>
+          <path d="m120.7 538.91s-24.019-36.576-59.844-53.84c-34.801-16.78-60.225-2.49-60.856-1.93 0 0 17.877 32.67 50.767 48.325 44.687 21.271 69.938 7.4411 69.938 7.4412z"/>
+          <path d="m112.96 489.18c-12.82-12.06-13.775-44.84-32.099-71.44-25.563-37.11-67.73-34.42-68.361-34.07 0 0 4.5142 46.234 36.481 74.178 33.973 29.697 63.978 31.335 63.978 31.335z"/>
+          <path d="m109.42 411.25s1.2445-40.185-9.3525-70.701c-14.783-42.569-55.138-50.926-55.839-50.759 0 0-6.5444 45.519 16.848 80.952 24.861 37.657 48.344 40.507 48.344 40.507z"/>
+          <path d="m126.51 335.94s8.0495-33.735 3.9716-65.78c-6.1462-48.297-43.73-58.521-44.448-58.451 0 0-12.884 44.733 5.4449 83.031 19.479 40.702 35.031 41.2 35.031 41.2z"/>
+          <path d="m159.62 255.08s13.089-30.516 11.412-62.775c-2.3279-44.771-32.665-63.685-33.385-63.711 0 0-29.251 26.374-12.451 83.145 10.191 34.437 34.425 43.342 34.425 43.342z"/>
+          <path d="m201.74 188.6s19.451-29.962 24.832-61.814c5.0517-29.903-7.0803-62.481-9.7885-65.475 0 0-31.65 13.91-30.465 67.294 0.79711 35.905 15.422 59.995 15.422 59.995z"/>
+          <path d="m253.49 124.45s23.192-24.697 29.233-58.466c5-27.984-0.04-58.394-5.31-65.984 0 0-30.25 18.795-32.448 66.327-1.6587 35.875 6.1262 52.95 8.5253 58.127z"/>
+          <path d="m291.03 85.107s44.199 1.5969 66.166-11.157c24.589-14.276 48.719-45.263 50.623-54.309 0 0-38.712-16.975-74.806 14.032-27.242 23.402-39.862 46.137-41.983 51.434z"/>
+          <path d="m242.33 138.43s21.141-24.752 57.469-31.147c28.002-4.9287 49.529-0.37797 63.35 7.6753 0 0-21.322 27.318-62.19 31.084-35.762 3.2949-53.376-5.3854-58.63-7.6124z"/>
+          <path d="m198.64 195.5s20.13-23.742 56.459-30.136c28.002-4.9287 41.448 0.12711 55.269 8.1804 0 0-17.029 26.056-57.897 29.821-35.762 3.2949-48.578-5.638-53.832-7.8649z"/>
+          <path d="m156.23 269.95s18.805-29.262 52.808-43.562c34.843-14.654 52.739-7.6569 67.725-2.0626-4.7791 7.1686-24.337 37.05-56.046 46.02-34.557 9.7763-58.932 0.90881-64.487-0.39556z"/>
+          <path d="m131.06 336.07s16.664-30.532 49.556-47.228c33.706-17.109 52.056-11.41 67.404-6.9021-4.254 7.4921-21.624 38.696-52.61 49.912-33.77 12.223-58.716 5.1223-64.35 4.2186z"/>
+          <path d="m117.84 414.65c14.421-18.489 22.261-38.366 44.449-58.149 27.336-24.373 50.792-16.603 66.711-15.029-7.8365 14.719-19.603 38.003-43.92 55.546-29.126 21.011-61.536 17.473-67.24 17.633z"/>
+          <path d="m119.63 487.05c12.262-19.986 18.081-35.565 37.916-57.707 24.437-27.278 47.605-22.435 63.6-22.652-6.1404 15.503-16.49 38.695-38.692 58.849-26.592 24.138-57.175 20.713-62.824 21.51z"/>
+          <path d="m135.4 544.78c18.448-28.481 16.12-34.927 34.176-58.542 19.392-25.362 43.885-24.665 59.811-26.165-4.8772 15.946-12.165 37.517-32.837 59.237-22.045 23.163-44.975 20.181-61.149 25.47z"/>
+          <path d="m165.71 601.35c11.63-25.198 9.6219-40.933 20.286-58.794 17.442-29.213 34.541-30.474 50.467-31.973-12.703 36.396-9.762 36.564-23.746 58.732-13.607 21.571-32.096 24.474-47.007 32.036z"/>
+          <path d="m202.25 648.92c6.628-26.95-0.10184-35.197 6.973-54.76 11.571-31.996 28.119-36.484 43.469-40.983-1.7651 21.479 0.89983 35.106-11.139 58.387-8.5015 16.44-26.101 27.098-39.303 37.356z"/>
+          <path d="m275.9 596.01s13.293 25.664 8.8773 55.408c-6.2559 42.144-28.777 48.458-28.777 48.458s-12.827-19.155-11.523-58.022c1.3924-41.516 31.423-45.845 31.423-45.845z"/>
+          <path d="m323.88 638.94s13.303 25.984 10.393 55.914c-3.7305 38.356-24.736 47.953-24.736 47.953s-13.232-21.412-13.796-53.728c-0.86041-49.346 28.14-50.138 28.14-50.138z"/>
+          <path d="M 2217.186 49.002 C 2235.464 61.279 2255.665 76.482 2271.946 93.439 C 2300.833 123.525 2329.482 157.443 2354.105 191.38 C 2370.739 214.306 2392.32 249.095 2404.111 274.685 C 2419.802 308.741 2429.096 332.6 2437.708 370.017 C 2449.84 422.73 2448.168 476.827 2435.845 527.827 C 2417.716 602.858 2359.695 665.637 2301.715 716.597 C 2256.357 756.46 2195.375 782.539 2141.795 801.695 L 2136.295 787.075 C 2189.393 768.093 2245.665 742.756 2289.135 704.503 C 2345.052 655.3 2396.695 595.293 2418.985 523.773 C 2432.551 480.242 2435.701 432.478 2428.582 386.233 C 2422.345 345.717 2406.664 305.112 2391.389 268.193 C 2378.831 237.844 2364.189 214.202 2346.329 189.301 C 2323.684 157.727 2298.8 126.936 2272.348 98.821 C 2255.225 80.622 2232.325 64.192 2213.933 51.839 L 2217.186 49.002 Z"/>
+          <path d="M 2240.486 756.98 C 2240.486 756.98 2278.12 745.082 2307.986 748.587 C 2355.401 754.151 2359.772 783.587 2359.772 783.587 C 2359.772 783.587 2340.75 795.396 2299.95 790.909 C 2252.154 785.651 2240.486 756.98 2240.486 756.98 Z"/>
+          <path d="M 2304.486 713.02 C 2304.486 713.02 2336.202 697.976 2366.272 698.199 C 2418.33 698.585 2421.451 726.235 2421.451 726.235 C 2421.451 726.235 2402.608 739.83 2360.915 739.271 C 2312.835 738.626 2304.486 713.021 2304.486 713.021 L 2304.486 713.02 Z"/>
+          <path d="M 2351.986 666.79 C 2351.986 666.79 2382.143 640.36 2411.312 633.051 C 2461.81 620.398 2478.536 649.781 2478.536 649.781 C 2478.536 649.781 2459.765 672.301 2419.259 682.192 C 2372.548 693.598 2351.986 666.79 2351.986 666.79 Z"/>
+          <path d="M 2405.486 595.58 C 2405.486 595.58 2431.276 568.395 2466.58 557.548 C 2512.653 543.392 2534.309 571.184 2534.941 571.879 C 2534.941 571.879 2516.062 595.641 2476.675 606.058 C 2423.843 620.031 2405.487 595.58 2405.487 595.58 L 2405.486 595.58 Z"/>
+          <path d="M 2430.986 538.91 C 2430.986 538.91 2455.005 502.334 2490.83 485.07 C 2525.636 468.296 2551.059 482.582 2551.691 483.144 C 2551.691 483.144 2533.814 515.814 2500.924 531.469 C 2456.237 552.74 2430.986 538.91 2430.986 538.91 Z"/>
+          <path d="M 2438.686 489.18 C 2451.503 477.121 2452.46 444.342 2470.784 417.739 C 2496.347 380.628 2538.513 383.32 2539.144 383.667 C 2539.144 383.667 2534.63 429.901 2502.663 457.845 C 2468.69 487.542 2438.685 489.18 2438.685 489.18 L 2438.686 489.18 Z"/>
+          <path d="M 2442.286 411.25 C 2442.286 411.25 2441.042 371.065 2451.639 340.549 C 2466.422 297.98 2506.777 289.623 2507.478 289.79 C 2507.478 289.79 2514.022 335.309 2490.63 370.742 C 2465.77 408.399 2442.286 411.249 2442.286 411.249 L 2442.286 411.25 Z"/>
+          <path d="M 2425.186 335.94 C 2425.186 335.94 2417.137 302.205 2421.215 270.16 C 2427.361 221.863 2464.945 211.639 2465.663 211.709 C 2465.663 211.709 2478.547 256.442 2460.218 294.74 C 2440.739 335.442 2425.187 335.94 2425.187 335.94 L 2425.186 335.94 Z"/>
+          <path d="M 2392.086 255.08 C 2392.086 255.08 2378.997 224.564 2380.674 192.305 C 2383.002 147.534 2413.339 128.62 2414.059 128.594 C 2414.059 128.594 2443.31 154.968 2426.51 211.739 C 2416.319 246.176 2392.085 255.081 2392.085 255.081 L 2392.086 255.08 Z"/>
+          <path d="M 2349.886 188.6 C 2349.886 188.6 2330.435 158.638 2325.054 126.786 C 2320.003 96.883 2332.135 64.305 2334.843 61.311 C 2334.843 61.311 2366.493 75.221 2365.308 128.605 C 2364.511 164.51 2349.886 188.6 2349.886 188.6 Z"/>
+          <path d="M 2298.186 124.45 C 2298.186 124.45 2274.994 99.753 2268.953 65.984 C 2263.946 37.995 2268.987 7.585 2274.264 -0.005 C 2274.264 -0.005 2304.514 18.79 2306.712 66.322 C 2308.37 102.197 2300.585 119.272 2298.186 124.449 L 2298.186 124.45 Z"/>
+          <path d="M 2260.686 85.107 C 2260.686 85.107 2216.487 86.704 2194.52 73.95 C 2169.931 59.674 2145.801 28.687 2143.897 19.641 C 2143.897 19.641 2182.609 2.666 2218.703 33.673 C 2245.945 57.075 2258.565 79.81 2260.686 85.107 Z"/>
+          <path d="M 2309.386 138.43 C 2309.386 138.43 2288.245 113.678 2251.917 107.283 C 2223.915 102.354 2202.388 106.905 2188.567 114.958 C 2188.567 114.958 2209.889 142.276 2250.757 146.042 C 2286.519 149.337 2304.133 140.657 2309.387 138.43 L 2309.386 138.43 Z"/>
+          <path d="M 2352.986 195.5 C 2352.986 195.5 2332.856 171.758 2296.527 165.364 C 2268.525 160.435 2255.079 165.491 2241.258 173.544 C 2241.258 173.544 2258.287 199.6 2299.155 203.365 C 2334.917 206.66 2347.733 197.727 2352.987 195.501 L 2352.986 195.5 Z"/>
+          <path d="M 2395.486 269.95 C 2395.486 269.95 2376.681 240.688 2342.678 226.388 C 2307.835 211.734 2289.939 218.731 2274.953 224.325 C 2279.732 231.494 2299.29 261.375 2330.999 270.345 C 2365.556 280.122 2389.931 271.254 2395.486 269.95 Z"/>
+          <path d="M 2420.586 336.07 C 2420.586 336.07 2403.922 305.538 2371.03 288.842 C 2337.324 271.733 2318.974 277.432 2303.626 281.94 C 2307.88 289.432 2325.25 320.636 2356.236 331.852 C 2390.006 344.075 2414.952 336.974 2420.586 336.071 L 2420.586 336.07 Z"/>
+          <path d="M 2433.786 414.65 C 2419.365 396.161 2411.525 376.284 2389.337 356.501 C 2362.001 332.128 2338.545 339.898 2322.626 341.472 C 2330.463 356.191 2342.229 379.475 2366.546 397.018 C 2395.672 418.029 2428.082 414.491 2433.786 414.651 L 2433.786 414.65 Z"/>
+          <path d="M 2432.086 487.05 C 2419.824 467.064 2414.005 451.485 2394.17 429.343 C 2369.733 402.065 2346.565 406.908 2330.57 406.691 C 2336.711 422.194 2347.06 445.386 2369.262 465.54 C 2395.854 489.678 2426.436 486.253 2432.086 487.05 Z"/>
+          <path d="M 2416.286 544.78 C 2397.838 516.299 2400.166 509.853 2382.11 486.238 C 2362.718 460.876 2338.225 461.573 2322.299 460.073 C 2327.176 476.019 2334.465 497.59 2355.136 519.31 C 2377.181 542.473 2400.111 539.491 2416.285 544.78 L 2416.286 544.78 Z"/>
+          <path d="M 2385.986 601.35 C 2374.356 576.152 2376.364 560.417 2365.7 542.556 C 2348.258 513.343 2331.159 512.082 2315.233 510.583 C 2327.936 546.979 2324.995 547.147 2338.979 569.315 C 2352.586 590.886 2371.075 593.789 2385.986 601.351 L 2385.986 601.35 Z"/>
+          <path d="M 2349.386 648.92 C 2342.758 621.97 2349.488 613.723 2342.413 594.16 C 2330.842 562.164 2314.294 557.676 2298.944 553.177 C 2300.709 574.656 2298.044 588.283 2310.083 611.564 C 2318.585 628.004 2336.184 638.662 2349.386 648.92 Z"/>
+          <path d="M 2275.786 596.01 C 2275.786 596.01 2262.493 621.674 2266.909 651.418 C 2273.165 693.562 2295.686 699.876 2295.686 699.876 C 2295.686 699.876 2308.513 680.721 2307.209 641.854 C 2305.816 600.338 2275.786 596.009 2275.786 596.009 L 2275.786 596.01 Z"/>
+          <path d="M 2227.786 638.94 C 2227.786 638.94 2214.483 664.924 2217.394 694.854 C 2221.125 733.21 2242.13 742.807 2242.13 742.807 C 2242.13 742.807 2255.362 721.395 2255.926 689.079 C 2256.787 639.733 2227.786 638.941 2227.786 638.941 L 2227.786 638.94 Z"/>
+        </svg>
+        <div class="laurel-center">
+          <div class="stars">★★★★★</div>
+          <div class="subtitle">NO. 1 MAIL PLUGIN</div>
         </div>
       </div>
-      <br>
-      <div class="open-source-badge">Open Source &middot; MIT</div>
-      <br>
-      <a href="https://github.com/jpwahle/ai-apple-mail/releases/latest" class="download-btn" id="download-btn" aria-label="Download the Apple Mail AI Plugin for macOS">Download Latest</a>
+      <div class="eyebrow">Open Source · MIT · For macOS</div>
     </div>
-  </section>
 
-  <!-- Hero -->
-  <section class="hero" aria-labelledby="hero-heading">
-    <div class="container">
-      <h1 class="hero-headline" id="hero-heading">Apple Mail AI Plugin</h1>
-      <p class="hero-sub">Type your thoughts. AI writes the email — right inside Apple Mail. Claude, GPT, Gemini. Open source.</p>
-
-      <div class="mac-window hero-window">
-        <div class="mac-titlebar">
-          <div class="mac-dots">
-            <div class="mac-dot mac-dot--red"></div>
-            <div class="mac-dot mac-dot--yellow"></div>
-            <div class="mac-dot mac-dot--green"></div>
-          </div>
-          <div class="mac-title">Apple Mail AI Plugin</div>
-        </div>
-        <div class="mac-body">
-          <div class="hero-input-zone">
-            <label class="hero-label">Your thoughts</label>
-            <div class="hero-input" id="hero-input"><span class="cursor" id="hero-cursor"></span></div>
-          </div>
-          <button class="hero-generate-btn" id="hero-generate-btn">Generate &#x2325;H</button>
-          <div class="hero-output-zone" id="hero-output-zone">
-            <div class="hero-output-label">AI Reply</div>
-            <div class="hero-output-text" id="hero-output-text"></div>
-          </div>
-        </div>
-      </div>
+    <h1>
+      Type your thoughts.<br>
+      <em>AI writes the email.</em>
+    </h1>
+    <p class="tagline">
+      A plugin for Apple Mail that turns your rough thoughts into a finished reply —
+      using Claude, GPT, or Gemini. Your keys. Your data. Right inside the app you already use.
+    </p>
+    <div class="cta-row">
+      <a href="https://github.com/jpwahle/ai-apple-mail/releases/latest" class="btn btn--primary" id="download-btn">
+        <svg class="btn-apple" width="14" height="17" viewBox="0 0 384 512" aria-hidden="true" fill="currentColor">
+          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+        </svg>
+        <span>Download for macOS</span>
+        <span class="meta" id="version-meta">v1.4 · 2.1 MB</span>
+      </a>
+      <a href="https://github.com/jpwahle/ai-apple-mail" class="btn btn--ghost">
+        <svg class="btn-gh" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        <span>View on GitHub</span>
+      </a>
     </div>
-  </section>
 
-  <!-- Feature: Conversation Context -->
-  <section class="feature-section feature-section--alt">
-    <div class="container fade-up">
-      <h2>Reads the whole conversation</h2>
-      <p>AI gets the full email thread as context &mdash; not just the last message.</p>
-
-      <div class="mac-window">
-        <div class="mac-titlebar">
-          <div class="mac-dots">
-            <div class="mac-dot mac-dot--red"></div>
-            <div class="mac-dot mac-dot--yellow"></div>
-            <div class="mac-dot mac-dot--green"></div>
-          </div>
-          <div class="mac-title">Mail &mdash; Re: Thursday lunch?</div>
+    <div class="demo-wrap">
+      <div class="demo" data-demo>
+        <div class="demo-head">
+          <div class="demo-label">AI Reply</div>
+          <div class="demo-models" data-demo-models></div>
         </div>
-        <div class="mac-body">
-          <div class="email-thread">
-            <div class="email-msg">
-              <div class="email-from">From: Sarah Chen</div>
-              <div class="email-subject">Re: Thursday lunch?</div>
-              <div class="email-snippet">Hey! Want to grab lunch on Thursday? I was thinking that new place on 5th street.</div>
-            </div>
-            <div class="email-msg">
-              <div class="email-from">From: You</div>
-              <div class="email-snippet">Sounds good! What time works for you?</div>
-            </div>
-            <div class="email-msg email-msg--highlight">
-              <div class="email-from">From: Sarah Chen</div>
-              <div class="email-snippet">How about 12:30? I'm free after my morning meeting.</div>
-            </div>
-          </div>
-          <div class="context-indicator">
-            <span class="context-icon">&#8593;</span> AI reads all 3 messages for context
+        <div class="demo-section">
+          <div class="demo-section-label">Your thoughts</div>
+          <div class="demo-prompt">
+            <span data-demo-prompt-text></span>
+            <span class="demo-caret" data-demo-prompt-caret></span>
+            <span class="demo-kbd">⌥ H</span>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Feature: Any Model -->
-  <section class="feature-section">
-    <div class="container fade-up">
-      <h2>Use any model you want</h2>
-      <p>Switch between providers &mdash; use whatever works best for you.</p>
-
-      <div class="mac-window">
-        <div class="mac-titlebar">
-          <div class="mac-dots">
-            <div class="mac-dot mac-dot--red"></div>
-            <div class="mac-dot mac-dot--yellow"></div>
-            <div class="mac-dot mac-dot--green"></div>
+        <div class="demo-section">
+          <div class="demo-section-label">
+            <span class="demo-model-dot sm" data-demo-reply-dot></span>
+            <span data-demo-reply-model>Claude</span>
+            <span> reply</span>
+            <span class="thinking" data-demo-thinking-word></span>
           </div>
-          <div class="mac-title">Apple Mail AI Plugin &mdash; Settings</div>
-        </div>
-        <div class="mac-body">
-          <div class="model-selector-label">Model</div>
-          <div class="model-dropdown">
-            <div class="model-option model-option--selected">
-              <span class="model-dot" style="background: #10a37f;"></span>
-              ChatGPT
-              <span class="model-check">&#10003;</span>
-            </div>
-            <div class="model-option">
-              <span class="model-dot" style="background: #d97706;"></span>
-              Claude
-            </div>
-            <div class="model-option">
-              <span class="model-dot" style="background: #4285f4;"></span>
-              Gemini
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Feature: BYOK -->
-  <section class="feature-section feature-section--alt">
-    <div class="container fade-up">
-      <h2>Your keys. Your data.</h2>
-      <p>No accounts. No subscriptions. API keys stay in macOS Keychain.</p>
-
-      <div class="mac-window">
-        <div class="mac-titlebar">
-          <div class="mac-dots">
-            <div class="mac-dot mac-dot--red"></div>
-            <div class="mac-dot mac-dot--yellow"></div>
-            <div class="mac-dot mac-dot--green"></div>
-          </div>
-          <div class="mac-title">Apple Mail AI Plugin &mdash; API Keys</div>
-        </div>
-        <div class="mac-body">
-          <div class="key-settings">
-            <div class="key-row">
-              <span class="key-provider">Anthropic</span>
-              <span class="key-field">sk-ant-&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</span>
-            </div>
-            <div class="key-row">
-              <span class="key-provider">OpenAI</span>
-              <span class="key-field">sk-&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</span>
-            </div>
-            <div class="key-row">
-              <span class="key-provider">Google</span>
-              <span class="key-field">AIza&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</span>
-            </div>
-          </div>
-          <div class="keychain-badge">&#x1F512; Stored in macOS Keychain</div>
+          <div class="demo-reply"><span data-demo-reply-text></span><span class="demo-reply-caret hidden" data-demo-reply-caret></span><span class="demo-thinking hidden" data-demo-reply-dots><span class="pd"></span><span class="pd"></span><span class="pd"></span></span></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
+  <section id="features" class="features">
+    <div class="section-head">
+      <span class="eyebrow">⟶ Three principles</span>
+      <h2>Built to stay <em>out of your way.</em></h2>
+    </div>
+
+    <div class="feature-row fade-up">
+      <div>
+        <div class="index">— 01</div>
+        <h3>Reads the whole conversation</h3>
+        <p>AI gets the full email thread as context — not just the last message. It sees what's been said, who said it, and what needs a response.</p>
+      </div>
+      <div>
+        <div class="mail-win">
+          <div class="titlebar">
+            <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+            <div class="title">Thread — Thursday lunch?</div>
+            <div class="titlebar-spacer"></div>
+          </div>
+          <div class="mail-msg">
+            <div class="mail-avatar peer">S</div>
+            <div class="mail-body-col">
+              <div class="mail-head-row"><div class="mail-from">Sarah Chen</div><div class="mail-time">Tue 3:41 PM</div></div>
+              <div class="mail-snippet">Hey! Want to grab lunch on Thursday? I was thinking that new place on 5th street.</div>
+            </div>
+          </div>
+          <div class="mail-msg">
+            <div class="mail-avatar you">Y</div>
+            <div class="mail-body-col">
+              <div class="mail-head-row"><div class="mail-from">You</div><div class="mail-time">Tue 4:02 PM</div></div>
+              <div class="mail-snippet">Sounds good! What time works for you?</div>
+            </div>
+          </div>
+          <div class="mail-msg">
+            <div class="mail-avatar peer">S</div>
+            <div class="mail-body-col">
+              <div class="mail-head-row"><div class="mail-from">Sarah Chen</div><div class="mail-time">Wed 9:15 AM</div></div>
+              <div class="mail-snippet">How about 12:30? I'm free after my morning meeting.</div>
+            </div>
+          </div>
+          <div class="mail-context-foot"><span>↑</span> AI reads all 3 messages for context</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-row flip fade-up">
+      <div>
+        <div class="index">— 02</div>
+        <h3>Use any model you want</h3>
+        <p>Switch between providers right in settings — Claude, GPT, or Gemini. Same prompt, different voice. Whatever works best for the email at hand.</p>
+      </div>
+      <div>
+        <div class="mviz">
+          <div class="mviz-head">Settings → Model</div>
+          <div class="mviz-row active-claude" data-mviz-row="claude">
+            <div class="mviz-badge" style="background:#D97757;">C</div>
+            <div class="mviz-body"><div class="mviz-name">Claude</div><div class="mviz-sub">claude-sonnet-4.5</div></div>
+            <div class="mviz-check">✓</div>
+          </div>
+          <div class="mviz-row" data-mviz-row="gpt">
+            <div class="mviz-badge" style="background:#10A37F;">C</div>
+            <div class="mviz-body"><div class="mviz-name">ChatGPT</div><div class="mviz-sub">gpt-5</div></div>
+            <div class="mviz-check">✓</div>
+          </div>
+          <div class="mviz-row" data-mviz-row="gemini">
+            <div class="mviz-badge" style="background:#4285F4;">G</div>
+            <div class="mviz-body"><div class="mviz-name">Gemini</div><div class="mviz-sub">gemini-2.5-pro</div></div>
+            <div class="mviz-check">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-row fade-up">
+      <div>
+        <div class="index">— 03</div>
+        <h3>Your keys. Your data.</h3>
+        <p>No accounts, no subscriptions, no servers in the middle. API keys live in the macOS Keychain. Your email never touches our infrastructure — because there isn't any.</p>
+      </div>
+      <div>
+        <div class="kviz">
+          <div class="kviz-head">
+            <div class="kviz-title">API Keys</div>
+            <div class="kviz-chain">
+              <svg width="12" height="14" viewBox="0 0 12 14" aria-hidden="true">
+                <rect x="1" y="6" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/>
+                <path d="M3 6 V 4 a3 3 0 0 1 6 0 V 6" fill="none" stroke="currentColor" stroke-width="1.3"/>
+              </svg>
+              macOS Keychain
+            </div>
+          </div>
+          <div class="kviz-row">
+            <div class="kviz-label">Anthropic</div>
+            <div class="kviz-field">sk-ant-api03-•••••••••••••••••••</div>
+          </div>
+          <div class="kviz-row">
+            <div class="kviz-label">OpenAI</div>
+            <div class="kviz-field">sk-proj-•••••••••••••••••••••••••</div>
+          </div>
+          <div class="kviz-row">
+            <div class="kviz-label">Google</div>
+            <div class="kviz-field">AIzaSy•••••••••••••••••••••••••</div>
+          </div>
+          <div class="kviz-foot">
+            <span class="dotacc">●</span>
+            Nothing leaves this Mac except your API calls.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="faq">
+    <div class="section-head">
+      <span class="eyebrow">⟶ Frequently asked</span>
+      <h2>Questions, answered.</h2>
+    </div>
+    <div class="faq-list" data-faq-list></div>
+  </section>
+
+  <section class="oss">
+    <div class="oss-card fade-up">
+      <span class="eyebrow">⟶ Open Source</span>
+      <h2>Free forever.<br>Read the source.</h2>
+      <p>MIT licensed. Audit the code, file an issue, send a patch. Built by one person, for people who take email seriously.</p>
+      <div class="stats">
+        <div class="stat"><div class="n" data-gh-stars>2.1k</div><div class="l">★ stars</div></div>
+        <div class="stat"><div class="n">34</div><div class="l">contributors</div></div>
+        <div class="stat"><div class="n" data-gh-version>v1.4</div><div class="l">latest release</div></div>
+        <div class="stat"><div class="n">MIT</div><div class="l">license</div></div>
+      </div>
+      <a href="https://github.com/jpwahle/ai-apple-mail" class="btn btn--primary" style="padding: 14px 24px; font-size: 14px;">
+        github.com/jpwahle/ai-apple-mail ↗
+      </a>
+    </div>
+  </section>
+
   <footer class="site-footer">
-    <div class="container">
-      <div class="footer-links">
+    <div class="site-footer-row">
+      <div>MIT License · Made by Jan Philip Wahle · Not affiliated with Apple Inc.</div>
+      <div class="links">
         <a href="https://github.com/jpwahle/ai-apple-mail">GitHub</a>
-        <a href="https://github.com/jpwahle/ai-apple-mail/releases/latest" id="footer-version">Latest Release</a>
+        <a href="https://github.com/jpwahle/ai-apple-mail/releases/latest">Releases</a>
       </div>
-      <div class="footer-copy">MIT License &middot; Made by Jan Philip Wahle</div>
     </div>
   </footer>
 
   <script>
-    (function() {
-      var inputEl = document.getElementById('hero-input');
-      var cursorEl = document.getElementById('hero-cursor');
-      var btnEl = document.getElementById('hero-generate-btn');
-      var outputZone = document.getElementById('hero-output-zone');
-      var outputText = document.getElementById('hero-output-text');
+  (function() {
+    'use strict';
 
-      var inputMsg = 'hey yeah that wroks for me, lets do thurday lunch im free after 1 lol';
-      var outputMsg = 'Hi Sarah, Thursday lunch sounds great! I\u2019m available any time after 1 PM. Want to meet at the usual place?';
-      var outputWords = outputMsg.split(' ');
+    // ------------------------------------------------------------
+    // Data
+    // ------------------------------------------------------------
+    var FAQ_ITEMS = [
+      { q: 'Do I need to create an account?',
+        a: 'No. The plugin runs entirely on your Mac. You bring API keys from Anthropic, OpenAI, or Google, and they sit in the macOS Keychain alongside your other credentials.' },
+      { q: 'Does my email get sent to some server?',
+        a: 'Only to the AI provider you chose, using your key. There is no middle-man server. The plugin talks to the provider API directly.' },
+      { q: 'Which macOS versions are supported?',
+        a: 'macOS Sonoma (14) and newer, on Intel and Apple Silicon.' },
+      { q: 'How much does it cost?',
+        a: 'The plugin is free and open source. You pay the AI provider directly for usage — typically fractions of a cent per reply.' },
+      { q: 'Is it affiliated with Apple?',
+        a: 'No. This is an independent open-source project. "Apple Mail" is used descriptively to identify the mail app it extends.' }
+    ];
 
-      function runCycle() {
-        // Reset
-        inputEl.textContent = '';
-        inputEl.appendChild(cursorEl);
-        outputZone.classList.remove('visible');
-        outputText.innerHTML = '';
-        btnEl.classList.remove('pulse');
-
-        var charIdx = 0;
-
-        // Phase 1: Type input char by char
-        var typeTimer = setInterval(function() {
-          if (charIdx < inputMsg.length) {
-            inputEl.insertBefore(document.createTextNode(inputMsg[charIdx]), cursorEl);
-            charIdx++;
-          } else {
-            clearInterval(typeTimer);
-            // Phase 2: Button pulse
-            setTimeout(function() {
-              cursorEl.style.display = 'none';
-              btnEl.classList.add('pulse');
-
-              setTimeout(function() {
-                btnEl.classList.remove('pulse');
-                // Phase 3: Show shimmer
-                outputZone.classList.add('visible');
-                outputText.innerHTML = '<div class="shimmer-bar"></div><div class="shimmer-bar"></div><div class="shimmer-bar"></div>';
-
-                // Phase 4: Stream output word by word
-                setTimeout(function() {
-                  outputText.textContent = '';
-                  var wordIdx = 0;
-                  var wordTimer = setInterval(function() {
-                    if (wordIdx < outputWords.length) {
-                      outputText.textContent += (wordIdx > 0 ? ' ' : '') + outputWords[wordIdx];
-                      wordIdx++;
-                    } else {
-                      clearInterval(wordTimer);
-                      // Phase 5: Hold, then restart
-                      setTimeout(function() {
-                        cursorEl.style.display = '';
-                        runCycle();
-                      }, 3000);
-                    }
-                  }, 60);
-                }, 800);
-              }, 300);
-            }, 500);
-          }
-        }, 40);
+    var DEMO_SCENARIOS = [
+      {
+        model: 'claude',
+        prompt: 'yes, 12:30 works. suggest somewhere quiet.',
+        reply: "Sounds good — 12:30 works for me. Would you mind picking somewhere a bit quieter than the 5th Street spot? I'd love a place where we can actually hear each other. Open to suggestions.\n\nSee you Thursday,"
+      },
+      {
+        model: 'gpt',
+        prompt: 'decline politely, suggest next week',
+        reply: "Thanks for the invite! Thursday's a bit tight for me this week — could we push it to early next week instead? Tuesday or Wednesday around the same time would be great if that works on your end."
+      },
+      {
+        model: 'gemini',
+        prompt: 'confirm, ask if tom can join',
+        reply: "12:30 on Thursday works great. Quick question — any objection if I bring Tom along? He was asking about catching up and it'd be a good chance to introduce you two. Let me know and I'll confirm with him."
       }
+    ];
+    var MODEL_META = {
+      claude: { name: 'Claude', color: '#D97757' },
+      gpt:    { name: 'ChatGPT', color: '#10A37F' },
+      gemini: { name: 'Gemini', color: '#4285F4' }
+    };
 
-      runCycle();
-    })();
+    // ------------------------------------------------------------
+    // Theme
+    // ------------------------------------------------------------
+    var body = document.body;
+    var STORAGE_KEY = 'apple-mail-ai-theme';
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (saved === 'light' || saved === 'dark') {
+        body.setAttribute('data-theme', saved);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        body.setAttribute('data-theme', 'dark');
+      }
+    } catch (e) {}
 
-    // --- GitHub Release Auto-Update ---
-    (function() {
-      var btn = document.getElementById('download-btn');
-      var footerVersion = document.getElementById('footer-version');
-      fetch('https://api.github.com/repos/jpwahle/ai-apple-mail/releases/latest')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data && data.tag_name) {
-            var version = data.tag_name;
-            btn.textContent = 'Download ' + version;
-            footerVersion.textContent = version;
-            var dmg = (data.assets || []).find(function(a) { return a.name.endsWith('.dmg'); });
-            if (dmg) {
-              btn.href = dmg.browser_download_url;
-            }
-          }
-        })
-        .catch(function() { /* fallback: button already links to releases/latest */ });
-    })();
+    document.getElementById('theme-btn').addEventListener('click', function () {
+      var cur = body.getAttribute('data-theme');
+      var next = cur === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', next);
+      try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+    });
 
-    // --- Scroll Reveal (Intersection Observer) ---
-    (function() {
-      var targets = document.querySelectorAll('.fade-up');
-      if (!targets.length) return;
-      var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
+    // ------------------------------------------------------------
+    // FAQ
+    // ------------------------------------------------------------
+    var faqList = document.querySelector('[data-faq-list]');
+    FAQ_ITEMS.forEach(function (item) {
+      var wrap = document.createElement('div');
+      wrap.className = 'faq-item';
+      wrap.innerHTML =
+        '<button class="faq-btn" type="button" aria-expanded="false">' +
+          '<span></span>' +
+          '<span class="mark" aria-hidden="true">+</span>' +
+        '</button>' +
+        '<div class="faq-body"><div class="faq-body-inner"></div></div>';
+      wrap.querySelector('.faq-btn span:first-child').textContent = item.q;
+      wrap.querySelector('.faq-body-inner').textContent = item.a;
+      wrap.querySelector('.faq-btn').addEventListener('click', function () {
+        var open = wrap.classList.toggle('open');
+        this.setAttribute('aria-expanded', String(open));
+      });
+      faqList.appendChild(wrap);
+    });
+
+    // ------------------------------------------------------------
+    // Demo model chips
+    // ------------------------------------------------------------
+    var modelsSlot = document.querySelector('[data-demo-models]');
+    DEMO_SCENARIOS.forEach(function (s, i) {
+      var meta = MODEL_META[s.model];
+      var chip = document.createElement('div');
+      chip.className = 'demo-model-chip';
+      chip.dataset.idx = i;
+      chip.innerHTML =
+        '<span class="demo-model-dot" style="background:' + meta.color + ';"></span>' +
+        '<span></span>';
+      chip.querySelector('span:last-child').textContent = meta.name;
+      modelsSlot.appendChild(chip);
+    });
+
+    // ------------------------------------------------------------
+    // LiveDemo
+    // ------------------------------------------------------------
+    var demo = document.querySelector('[data-demo]');
+    var promptTextEl = demo.querySelector('[data-demo-prompt-text]');
+    var promptCaret = demo.querySelector('[data-demo-prompt-caret]');
+    var replyTextEl = demo.querySelector('[data-demo-reply-text]');
+    var replyCaret = demo.querySelector('[data-demo-reply-caret]');
+    var replyDots = demo.querySelector('[data-demo-reply-dots]');
+    var replyModelLabel = demo.querySelector('[data-demo-reply-model]');
+    var replyModelDot = demo.querySelector('[data-demo-reply-dot]');
+    var thinkingWord = demo.querySelector('[data-demo-thinking-word]');
+    var chips = demo.querySelectorAll('.demo-model-chip');
+
+    function setActiveModel(model) {
+      var meta = MODEL_META[model];
+      chips.forEach(function (chip) {
+        var scen = DEMO_SCENARIOS[parseInt(chip.dataset.idx, 10)];
+        chip.classList.toggle('active', scen && scen.model === model);
+      });
+      replyModelLabel.textContent = meta.name;
+      replyModelDot.style.background = meta.color;
+    }
+
+    function runScenario(idx) {
+      var scen = DEMO_SCENARIOS[idx];
+      setActiveModel(scen.model);
+      replyTextEl.textContent = '';
+      replyCaret.classList.add('hidden');
+      replyDots.classList.add('hidden');
+      thinkingWord.textContent = '';
+      promptCaret.style.display = 'inline-block';
+
+      // Phase 1: type prompt (~35ms/char)
+      var pi = 0;
+      var typeId = setInterval(function () {
+        pi++;
+        promptTextEl.textContent = scen.prompt.slice(0, pi);
+        if (pi >= scen.prompt.length) {
+          clearInterval(typeId);
+          promptCaret.style.display = 'none';
+
+          // Phase 2: thinking
+          replyDots.classList.remove('hidden');
+          thinkingWord.textContent = 'thinking…';
+          setTimeout(function () {
+            replyDots.classList.add('hidden');
+            thinkingWord.textContent = '';
+
+            // Phase 3: stream reply (~12ms/char)
+            replyCaret.classList.remove('hidden');
+            var ri = 0;
+            var replyId = setInterval(function () {
+              ri++;
+              replyTextEl.textContent = scen.reply.slice(0, ri);
+              if (ri >= scen.reply.length) {
+                clearInterval(replyId);
+                replyCaret.classList.add('hidden');
+                setTimeout(function () {
+                  runScenario((idx + 1) % DEMO_SCENARIOS.length);
+                }, 2800);
+              }
+            }, 12);
+          }, 800);
+        }
+      }, 35);
+    }
+    runScenario(0);
+
+    // ------------------------------------------------------------
+    // Model switch cycling in feature viz
+    // ------------------------------------------------------------
+    var mvizRows = document.querySelectorAll('[data-mviz-row]');
+    if (mvizRows.length) {
+      var order = ['claude', 'gpt', 'gemini'];
+      var idx = 0;
+      setInterval(function () {
+        idx = (idx + 1) % order.length;
+        var cur = order[idx];
+        mvizRows.forEach(function (row) {
+          var m = row.getAttribute('data-mviz-row');
+          row.classList.remove('active-claude', 'active-gpt', 'active-gemini');
+          if (m === cur) row.classList.add('active-' + cur);
+        });
+      }, 2200);
+    }
+
+    // ------------------------------------------------------------
+    // Scroll reveal
+    // ------------------------------------------------------------
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
           }
         });
       }, { threshold: 0.15 });
-      targets.forEach(function(el) { observer.observe(el); });
-    })();
+      document.querySelectorAll('.fade-up').forEach(function (el) { io.observe(el); });
+    } else {
+      document.querySelectorAll('.fade-up').forEach(function (el) { el.classList.add('in'); });
+    }
+
+    // ------------------------------------------------------------
+    // GitHub release auto-update
+    // ------------------------------------------------------------
+    fetch('https://api.github.com/repos/jpwahle/ai-apple-mail/releases/latest')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data || !data.tag_name) return;
+        var version = data.tag_name;
+        var dmg = (data.assets || []).find(function (a) { return a.name && a.name.endsWith('.dmg'); });
+        var sizeMB = dmg ? (dmg.size / (1024 * 1024)).toFixed(1) + ' MB' : null;
+
+        document.querySelectorAll('[data-gh-version]').forEach(function (el) { el.textContent = version; });
+
+        var btn = document.getElementById('download-btn');
+        if (btn) {
+          if (dmg) btn.href = dmg.browser_download_url;
+          var meta = btn.querySelector('.meta');
+          if (meta) meta.textContent = version + (sizeMB ? ' · ' + sizeMB : '');
+        }
+      })
+      .catch(function () {});
+
+    fetch('https://api.github.com/repos/jpwahle/ai-apple-mail')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data || typeof data.stargazers_count !== 'number') return;
+        var n = data.stargazers_count;
+        var human = n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n);
+        document.querySelectorAll('[data-gh-stars]').forEach(function (el) { el.textContent = human; });
+      })
+      .catch(function () {});
+  })();
   </script>
 </body>
 </html>
