@@ -11,7 +11,7 @@ SIGNING_IDENTITY ?=
 APPLE_ID ?=
 TEAM_ID ?=
 
-.PHONY: build run clean release dmg sign notarize install uninstall
+.PHONY: build run clean release dmg sign notarize release-dmg install uninstall
 
 # Development build
 build:
@@ -83,10 +83,19 @@ notarize: sign
 	fi
 	@echo "Creating ZIP for notarization..."
 	@ditto -c -k --keepParent "$(APP_BUNDLE)" "$(BUILD_DIR)/$(BUNDLE_NAME).zip"
-	xcrun notarytool submit "$(BUILD_DIR)/$(BUNDLE_NAME).zip" \
-		--apple-id "$(APPLE_ID)" \
-		--team-id "$(TEAM_ID)" \
-		--wait
+	@if [ -n "$(KEYCHAIN_PROFILE)" ]; then \
+		xcrun notarytool submit "$(BUILD_DIR)/$(BUNDLE_NAME).zip" \
+			--keychain-profile "$(KEYCHAIN_PROFILE)" --wait; \
+	elif [ -n "$(APP_PASSWORD)" ]; then \
+		xcrun notarytool submit "$(BUILD_DIR)/$(BUNDLE_NAME).zip" \
+			--apple-id "$(APPLE_ID)" --team-id "$(TEAM_ID)" \
+			--password "$(APP_PASSWORD)" --wait; \
+	else \
+		echo "❌ Set KEYCHAIN_PROFILE (recommended) or APP_PASSWORD"; \
+		echo "   Recommended: xcrun notarytool store-credentials AC_PASSWORD --apple-id ... --team-id ... --password ..."; \
+		echo "   Then: make notarize SIGNING_IDENTITY='...' APPLE_ID=... TEAM_ID=... KEYCHAIN_PROFILE=AC_PASSWORD"; \
+		exit 1; \
+	fi
 	xcrun stapler staple "$(APP_BUNDLE)"
 	@echo "✅ Notarized and stapled: $(APP_BUNDLE)"
 
@@ -95,6 +104,22 @@ dmg: sign
 	@rm -f "$(BUILD_DIR)/$(BUNDLE_NAME).dmg"
 	./scripts/create-dmg.sh "$(APP_NAME)" "$(APP_BUNDLE)" "$(BUILD_DIR)/$(BUNDLE_NAME).dmg"
 	@echo "✅ DMG created: $(BUILD_DIR)/$(BUNDLE_NAME).dmg"
+
+# Full distribution build: sign → notarize → staple → DMG → sign DMG → notarize DMG
+release-dmg: notarize
+	@rm -f "$(BUILD_DIR)/$(BUNDLE_NAME).dmg"
+	./scripts/create-dmg.sh "$(APP_NAME)" "$(APP_BUNDLE)" "$(BUILD_DIR)/$(BUNDLE_NAME).dmg"
+	codesign --force --sign "$(SIGNING_IDENTITY)" "$(BUILD_DIR)/$(BUNDLE_NAME).dmg"
+	@if [ -n "$(KEYCHAIN_PROFILE)" ]; then \
+		xcrun notarytool submit "$(BUILD_DIR)/$(BUNDLE_NAME).dmg" \
+			--keychain-profile "$(KEYCHAIN_PROFILE)" --wait; \
+	else \
+		xcrun notarytool submit "$(BUILD_DIR)/$(BUNDLE_NAME).dmg" \
+			--apple-id "$(APPLE_ID)" --team-id "$(TEAM_ID)" \
+			--password "$(APP_PASSWORD)" --wait; \
+	fi
+	xcrun stapler staple "$(BUILD_DIR)/$(BUNDLE_NAME).dmg"
+	@echo "✅ Distribution-ready DMG: $(BUILD_DIR)/$(BUNDLE_NAME).dmg"
 
 # Build and run
 run: build
