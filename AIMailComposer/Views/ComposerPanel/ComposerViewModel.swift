@@ -26,6 +26,10 @@ final class ComposerViewModel: ObservableObject {
     @Published var isStreaming: Bool = false
     @Published private(set) var mode: Mode = .reply
     @Published private(set) var context: ComposerContext?
+    /// True when the AX permission prompt should be shown instead of the
+    /// normal composer UI. Set when `fetchComposerContextWithAXFallback`
+    /// throws `accessibilityDenied`.
+    @Published var needsAccessibilityPermission = false
 
     var canSummarize: Bool {
         guard let context else { return false }
@@ -57,13 +61,37 @@ final class ComposerViewModel: ObservableObject {
 
     func activate() async {
         state = .loadingContext
+        needsAccessibilityPermission = false
         do {
-            let context = try await MailBridge.fetchComposerContext()
+            let context = try await MailBridge.fetchComposerContextWithAXFallback()
             self.context = context
             state = .ready
+        } catch let error as MailBridgeError {
+            if case .accessibilityDenied = error {
+                needsAccessibilityPermission = true
+                state = .error(error.errorDescription ?? "Accessibility required")
+            } else {
+                state = .error(error.errorDescription ?? "Unknown error")
+            }
         } catch {
             state = .error(error.localizedDescription)
         }
+    }
+
+    /// Called after the user grants Accessibility permission in System
+    /// Settings and taps "Retry" in the permission view.
+    func retryAfterAXPermission() async {
+        await activate()
+    }
+
+    /// Open System Settings → Privacy & Security → Accessibility.
+    func openAccessibilitySettings() {
+        AXPermissionChecker.openSettings()
+    }
+
+    /// Trigger the system's one-time AX permission prompt.
+    func requestAXPermission() {
+        _ = AXPermissionChecker.request()
     }
 
     func generate() async {
