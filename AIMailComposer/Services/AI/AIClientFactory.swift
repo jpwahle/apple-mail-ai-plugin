@@ -27,6 +27,11 @@ enum AIClientFactory {
                 throw AIClientError.missingAPIKey(.openrouter)
             }
             return OpenRouterClient(apiKey: key, model: model.id)
+        case .trustedtokens:
+            guard let key = keychainService.getKey(for: .trustedtokens), !key.isEmpty else {
+                throw AIClientError.missingAPIKey(.trustedtokens)
+            }
+            return TrustedTokensClient(apiKey: key, model: model.id)
         case .local:
             return LocalAIClient(baseURL: localAIBaseURL, model: model.id)
         }

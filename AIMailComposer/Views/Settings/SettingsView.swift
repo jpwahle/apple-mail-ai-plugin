@@ -35,6 +35,6 @@ struct SettingsView: View {
             }
             .frame(maxHeight: .infinity, alignment: .top)
         }
-        .frame(width: 500, height: 560)
+        .frame(minWidth: 500, minHeight: 560, alignment: .top)
     }
 }

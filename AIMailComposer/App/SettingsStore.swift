@@ -42,21 +42,24 @@ final class SettingsStore: ObservableObject {
     @Published var openaiModels: [AIModel] = []
     @Published var geminiModels: [AIModel] = []
     @Published var openrouterModels: [AIModel] = []
+    @Published var trustedtokensModels: [AIModel] = []
     @Published var localModels: [AIModel] = []
     @Published var isFetchingAnthropic = false
     @Published var isFetchingOpenAI = false
     @Published var isFetchingGemini = false
     @Published var isFetchingOpenRouter = false
+    @Published var isFetchingTrustedTokens = false
     @Published var isFetchingLocal = false
     @Published var anthropicFetchError: String?
     @Published var openaiFetchError: String?
     @Published var geminiFetchError: String?
     @Published var openrouterFetchError: String?
+    @Published var trustedtokensFetchError: String?
     @Published var localFetchError: String?
     @Published var trendingModels: [TrendingModel] = []
 
     var allModels: [AIModel] {
-        anthropicModels + openaiModels + geminiModels + openrouterModels + localModels
+        anthropicModels + openaiModels + geminiModels + openrouterModels + trustedtokensModels + localModels
     }
 
     /// Models grouped by provider. Within each group, sorted by release date
@@ -70,6 +73,7 @@ final class SettingsStore: ObservableObject {
             case .openai: models = openaiModels
             case .gemini: models = geminiModels
             case .openrouter: models = openrouterModels
+            case .trustedtokens: models = trustedtokensModels
             case .local: models = localModels
             }
             guard !models.isEmpty else { return nil }
@@ -97,11 +101,12 @@ final class SettingsStore: ObservableObject {
                 if let provider = entry.provider {
                     let providerModels: [AIModel]
                     switch provider {
-                    case .anthropic:  providerModels = anthropicModels
-                    case .openai:     providerModels = openaiModels
-                    case .gemini:     providerModels = geminiModels
-                    case .openrouter: providerModels = openrouterModels
-                    case .local:      providerModels = localModels
+                    case .anthropic:     providerModels = anthropicModels
+                    case .openai:        providerModels = openaiModels
+                    case .gemini:        providerModels = geminiModels
+                    case .openrouter:    providerModels = openrouterModels
+                    case .trustedtokens: providerModels = trustedtokensModels
+                    case .local:         providerModels = localModels
                     }
                     match = providerModels.first {
                         ModelFetcher.modelIDMatchesSlug($0.id, slug: entry.slug)
@@ -233,6 +238,17 @@ final class SettingsStore: ObservableObject {
                     openrouterFetchError = error.localizedDescription
                 }
                 isFetchingOpenRouter = false
+
+            case .trustedtokens:
+                isFetchingTrustedTokens = true
+                trustedtokensFetchError = nil
+                do {
+                    trustedtokensModels = try await ModelFetcher.fetchTrustedTokensModels(apiKey: apiKey)
+                    ensureDefaultSelection()
+                } catch {
+                    trustedtokensFetchError = error.localizedDescription
+                }
+                isFetchingTrustedTokens = false
 
             case .local:
                 break // handled above

@@ -68,6 +68,17 @@ extension AIModel {
             if id.contains("preview") || id.contains("experimental") { score -= 10 }
             if id.contains("embedding") || id.contains("audio") { score -= 60 }
 
+        case .trustedtokens:
+            // TrustedTokens exposes OpenRouter-style ids, often under a
+            // provider prefix (e.g. `skainet/zai-org/GLM-5.2`). Favour
+            // flagship families, penalise free/preview tags.
+            if id.contains("opus") || id.contains("gpt-5") || id.contains("o4") || id.contains("2.5-pro") || id.contains("glm-5") { score += 40 }
+            else if id.contains("sonnet") || id.contains("gpt-4.1") || id.contains("gpt-4o") || id.contains("2.5-flash") || id.contains("o3") { score += 30 }
+            else if id.contains("haiku") || id.contains("gpt-4-turbo") || id.contains("o1") { score += 20 }
+            if id.contains(":free") { score -= 40 }
+            if id.contains("preview") || id.contains("experimental") { score -= 10 }
+            if id.contains("embedding") || id.contains("audio") || id.contains("image") || id.contains("tts") { score -= 60 }
+
         case .local:
             break // no scoring heuristics for user-loaded local models
         }

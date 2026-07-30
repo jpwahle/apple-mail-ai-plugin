@@ -28,7 +28,7 @@ The **Apple Mail AI Plugin** lives in your menu bar and connects directly to App
 
 - **Menu bar app** — stays out of your way until you need it
 - **Works with Apple Mail** — reads your email thread, recipients, subject, and current draft
-- **Multiple AI providers** — Anthropic (Claude), OpenAI (GPT), Google Gemini, and OpenRouter
+- **Multiple AI providers** — Anthropic (Claude), OpenAI (GPT), Google Gemini, OpenRouter, and TrustedTokens (EU-sovereign)
 - **Streaming responses** — see the reply as it's being written
 - **Language matching** — automatically replies in the same language as the conversation
 - **Keyboard shortcut** — **⌥H** (Option + H) to open from anywhere
@@ -83,6 +83,15 @@ The Apple Mail AI Plugin calls AI providers directly — you'll need an API key 
 4. Click **Create Key**, name it, and copy the key
 
 > **Tip:** OpenRouter gives you access to models from many providers through a single key. Great if you want to try different models without managing multiple accounts.
+
+### TrustedTokens
+
+1. Go to [trustedtokens.eu](https://trustedtokens.eu/)
+2. Sign up for a free trial
+3. Open **Account** to find your API token
+4. Copy the token
+
+> **Tip:** TrustedTokens is an EU-sovereign, OpenAI-compatible gateway hosted in Germany — all data processed in the EU. Model ids follow the `provider/model` convention (e.g. `skainet/zai-org/GLM-5.2`).
 
 ### Add Your Key to the App
 

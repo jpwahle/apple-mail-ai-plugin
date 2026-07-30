@@ -159,6 +159,40 @@ enum ModelFetcher {
         }
     }
 
+    static func fetchTrustedTokensModels(apiKey: String) async throws -> [AIModel] {
+        let url = URL(string: "https://api.trustedtokens.eu/v1/models")!
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
+            let body = String(data: data, encoding: .utf8) ?? ""
+            throw AIClientError.requestFailed("Failed to fetch TrustedTokens models: \(body)")
+        }
+
+        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let modelsArray = json["data"] as? [[String: Any]]
+        else {
+            throw AIClientError.invalidResponse("Could not parse TrustedTokens models response")
+        }
+
+        return modelsArray.compactMap { obj -> AIModel? in
+            guard let id = obj["id"] as? String else { return nil }
+            // OpenRouter-style entries expose a human-readable `name`; the
+            // OpenAI-style ones only have `id`. Fall back gracefully.
+            let displayName = (obj["name"] as? String) ?? id
+            let created = obj["created"] as? TimeInterval
+            // Skip non-text modalities when the field is present.
+            if let archi = obj["architecture"] as? [String: Any],
+               let outputs = archi["output_modalities"] as? [String],
+               !outputs.contains("text") {
+                return nil
+            }
+            return AIModel(id: id, displayName: displayName, provider: .trustedtokens, createdAt: created)
+        }
+    }
+
     /// Fetch models ranked by popularity signals from OpenRouter's public API
     /// (no auth needed). Returns an ordered list so the most popular/capable
     /// models come first. This is a dynamic signal — when new flagship models

@@ -1024,6 +1024,7 @@ private struct ProviderGlyph: View {
         case .openai: return Color(red: 0.10, green: 0.60, blue: 0.46)
         case .gemini: return Color(red: 0.30, green: 0.52, blue: 0.95)
         case .openrouter: return Color(red: 0.45, green: 0.30, blue: 0.85)
+        case .trustedtokens: return Color(red: 0.10, green: 0.35, blue: 0.85)
         case .local: return Color(red: 0.40, green: 0.40, blue: 0.40)
         case .none: return .secondary
         }

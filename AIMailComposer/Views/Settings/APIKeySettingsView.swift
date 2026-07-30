@@ -6,6 +6,7 @@ struct APIKeySettingsView: View {
     @State private var openaiKey: String = ""
     @State private var geminiKey: String = ""
     @State private var openrouterKey: String = ""
+    @State private var trustedtokensKey: String = ""
     @State private var localBaseURL: String = ""
     @State private var statusMessage: String = ""
     @State private var isError: Bool = false
@@ -36,6 +37,15 @@ struct APIKeySettingsView: View {
                 keyField("OpenRouter", placeholder: "sk-or-v1-…", text: $openrouterKey)
                     .onAppear { openrouterKey = settingsStore.getAPIKey(for: .openrouter) ?? "" }
                 Text("One key for every model on openrouter.ai")
+                    .font(.system(size: 10))
+                    .foregroundStyle(.tertiary)
+                    .padding(.leading, 2)
+            }
+
+            VStack(alignment: .leading, spacing: 3) {
+                keyField("TrustedTokens", placeholder: "sk-bf…", text: $trustedtokensKey)
+                    .onAppear { trustedtokensKey = settingsStore.getAPIKey(for: .trustedtokens) ?? "" }
+                Text("EU-sovereign models at api.trustedtokens.eu")
                     .font(.system(size: 10))
                     .foregroundStyle(.tertiary)
                     .padding(.leading, 2)
@@ -84,6 +94,7 @@ struct APIKeySettingsView: View {
             || settingsStore.isFetchingOpenAI
             || settingsStore.isFetchingGemini
             || settingsStore.isFetchingOpenRouter
+            || settingsStore.isFetchingTrustedTokens
             || settingsStore.isFetchingLocal
     }
 
@@ -220,6 +231,9 @@ struct APIKeySettingsView: View {
             if let err = settingsStore.openrouterFetchError {
                 Text("OpenRouter: \(err)").font(.caption2).foregroundStyle(.red)
             }
+            if let err = settingsStore.trustedtokensFetchError {
+                Text("TrustedTokens: \(err)").font(.caption2).foregroundStyle(.red)
+            }
             if let err = settingsStore.localFetchError {
                 Text("Local AI: \(err)").font(.caption2).foregroundStyle(.red)
             }
@@ -233,11 +247,13 @@ struct APIKeySettingsView: View {
         let trimmedOpenAI = openaiKey.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedGemini = geminiKey.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedOpenRouter = openrouterKey.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedTrustedTokens = trustedtokensKey.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedLocalURL = localBaseURL.trimmingCharacters(in: .whitespacesAndNewlines)
         anthropicKey = trimmedAnthropic
         openaiKey = trimmedOpenAI
         geminiKey = trimmedGemini
         openrouterKey = trimmedOpenRouter
+        trustedtokensKey = trimmedTrustedTokens
         localBaseURL = trimmedLocalURL
 
         do {
@@ -245,6 +261,7 @@ struct APIKeySettingsView: View {
             try applyKey(trimmedOpenAI, for: .openai) { settingsStore.openaiModels = [] }
             try applyKey(trimmedGemini, for: .gemini) { settingsStore.geminiModels = [] }
             try applyKey(trimmedOpenRouter, for: .openrouter) { settingsStore.openrouterModels = [] }
+            try applyKey(trimmedTrustedTokens, for: .trustedtokens) { settingsStore.trustedtokensModels = [] }
 
             if trimmedLocalURL.isEmpty {
                 settingsStore.localAIBaseURL = ""
@@ -271,6 +288,7 @@ struct APIKeySettingsView: View {
                     settingsStore.openaiFetchError,
                     settingsStore.geminiFetchError,
                     settingsStore.openrouterFetchError,
+                    settingsStore.trustedtokensFetchError,
                     settingsStore.localFetchError,
                 ].compactMap { $0 }
                 if errors.isEmpty {
