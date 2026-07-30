@@ -19,17 +19,19 @@ struct ComposerView: View {
             contentArea
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            ComposerInputBar(
-                userThoughts: $viewModel.userThoughts,
-                isEditable: isInputEditable,
-                isGenerating: viewModel.isBusy,
-                canSend: viewModel.canSend,
-                placeholder: inputPlaceholder,
-                settingsStore: settingsStore,
-                shouldFocus: viewModel.state == .ready || viewModel.state == .complete,
-                claimsReturnShortcut: viewModel.state != .complete,
-                onSend: { Task { await viewModel.generate() } }
-            )
+            if !viewModel.needsAccessibilityPermission {
+                ComposerInputBar(
+                    userThoughts: $viewModel.userThoughts,
+                    isEditable: isInputEditable,
+                    isGenerating: viewModel.isBusy,
+                    canSend: viewModel.canSend,
+                    placeholder: inputPlaceholder,
+                    settingsStore: settingsStore,
+                    shouldFocus: viewModel.state == .ready || viewModel.state == .complete,
+                    claimsReturnShortcut: viewModel.state != .complete,
+                    onSend: { Task { await viewModel.generate() } }
+                )
+            }
         }
         .frame(minWidth: 500, minHeight: 500)
         .background(
@@ -52,41 +54,49 @@ struct ComposerView: View {
 
     @ViewBuilder
     private var contentArea: some View {
-        switch viewModel.state {
-        case .loadingContext:
-            LoadingState(label: "Reading your compose window…")
-
-        case .ready:
-            ReadyState(
-                context: viewModel.context,
-                canSummarize: viewModel.canSummarize,
-                isBusy: viewModel.isBusy,
-                onSummarize: { Task { await viewModel.summarize() } }
+        if viewModel.needsAccessibilityPermission {
+            AXPermissionState(
+                onRequest: { viewModel.requestAXPermission() },
+                onOpenSettings: { viewModel.openAccessibilitySettings() },
+                onRetry: { Task { await viewModel.retryAfterAXPermission() } }
             )
+        } else {
+            switch viewModel.state {
+            case .loadingContext:
+                LoadingState(label: "Reading your compose window…")
 
-        case .generating:
-            GeneratingState(
-                mode: viewModel.mode,
-                thoughts: viewModel.userThoughts
-            )
+            case .ready:
+                ReadyState(
+                    context: viewModel.context,
+                    canSummarize: viewModel.canSummarize,
+                    isBusy: viewModel.isBusy,
+                    onSummarize: { Task { await viewModel.summarize() } }
+                )
 
-        case .complete:
-            ReplyResultView(
-                reply: $viewModel.generatedReply,
-                mode: viewModel.mode,
-                userThoughts: viewModel.userThoughts,
-                isStreaming: viewModel.isStreaming,
-                onCopy: { viewModel.copyToClipboard() },
-                onInsert: { Task { await viewModel.insertIntoMail() } },
-                onRegenerate: { Task { await viewModel.regenerate() } },
-                onEdit: { viewModel.backToEditing() }
-            )
+            case .generating:
+                GeneratingState(
+                    mode: viewModel.mode,
+                    thoughts: viewModel.userThoughts
+                )
 
-        case .error(let message):
-            ErrorState(
-                message: message,
-                onRetry: { Task { await viewModel.retry() } }
-            )
+            case .complete:
+                ReplyResultView(
+                    reply: $viewModel.generatedReply,
+                    mode: viewModel.mode,
+                    userThoughts: viewModel.userThoughts,
+                    isStreaming: viewModel.isStreaming,
+                    onCopy: { viewModel.copyToClipboard() },
+                    onInsert: { Task { await viewModel.insertIntoMail() } },
+                    onRegenerate: { Task { await viewModel.regenerate() } },
+                    onEdit: { viewModel.backToEditing() }
+                )
+
+            case .error(let message):
+                ErrorState(
+                    message: message,
+                    onRetry: { Task { await viewModel.retry() } }
+                )
+            }
         }
     }
 
@@ -688,6 +698,47 @@ private struct ErrorState: View {
                 .padding(.horizontal, 32)
             Button("Try again") { onRetry() }
                 .controlSize(.regular)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+// MARK: - Accessibility permission
+
+private struct AXPermissionState: View {
+    let onRequest: () -> Void
+    let onOpenSettings: () -> Void
+    let onRetry: () -> Void
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Spacer()
+            Image(systemName: "lock.shield.fill")
+                .font(.system(size: 28))
+                .foregroundStyle(.blue)
+
+            Text("Accessibility Permission Needed")
+                .font(.system(size: 14, weight: .semibold))
+
+            Text("macOS 26 changed how Mail exposes compose windows. "
+                 + "Accessibility access is needed to read your recipients, "
+                 + "subject, and draft directly from the compose window.")
+                .font(.system(size: 12))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 36)
+
+            VStack(spacing: 8) {
+                Button("Grant Permission") {
+                    onRequest()
+                    onOpenSettings()
+                }
+                .controlSize(.regular)
+
+                Button("Retry") { onRetry() }
+                    .controlSize(.small)
+            }
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

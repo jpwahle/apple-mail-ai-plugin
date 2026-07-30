@@ -36,7 +36,7 @@ The **Apple Mail AI Plugin** lives in your menu bar and connects directly to App
 
 ## Installation
 
-**Requirements:** macOS 14 (Sonoma) or later
+**Requirements:** macOS 14 (Sonoma) or later. On macOS 15 (Sequoia) and later, Mail's AppleScript interface no longer exposes compose windows, so the app uses the Accessibility API to read your draft — grant **Accessibility** permission when prompted (System Settings → Privacy & Security → Accessibility).
 
 ### Download
 
